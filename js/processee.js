@@ -86,9 +86,9 @@ function processee(fn) {
 
 		p.setup = function() {
 			p.reset();
+			fn.call(p);
 		};
 		p.draw = function() {
-			fn.call(p);
 		};
 	}
 };

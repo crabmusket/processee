@@ -27,9 +27,11 @@ processing.do ->
   # of Processing's global state variables like fill and stroke color.
   # Settings inside a @do block do not 'leak' out of it.
   @do ->
-    # To use the @do block, the @set object is used instead of the regular
-    # @fill. Colour modes are passed in every related instruction.
+    # Inside a @do block, the @set object's fill member is used instead of
+    # the regular @fill method. Note that all colors are constructed in a
+    # specific color mode: rgb, hsv or gray.
     @set.fill = rgb 0, 100, 200
+    @set.stroke = rgb 200, 120, 0
     
     # The @make object allows you to construct shapes with named parameter
     # lists to improve readability.
@@ -43,7 +45,7 @@ processing.do ->
     # This nested @do block inherits the state 'scope' from the current @do
     # block, so the @set.fill above is retained.
     @do ->
-      @set.stroke = rgb 200, 100, 0
+      @set.stroke = gray 200
       @make.rect { x: 40, y: 40, width: 20, height: 20 }
   
   # Regular Processing functions can be called too if you don't like the

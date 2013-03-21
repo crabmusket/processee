@@ -31,15 +31,15 @@ processing.do ->
   # of Processing's global state variables like fill and stroke color.
   # Settings inside a @do block do not 'leak' out of it.
   @do ->
-    # Inside a @do block, the @set object's fill member is used instead of
-    # the regular @fill method. Note that all colors are constructed in a
-    # specific color mode: rgb, hsv or gray.
-    @set.fill = rgb 0, 100, 200
-    @set.stroke = rgb 200, 120, 0
+    # State inside a @do block is set using properties rather than function
+    # calls. Note that all colors are constructed in a specific color mode:
+    # rgb, hsv or gray.
+    @fillColor = rgb 0, 100, 200
+    @strokeColor = rgb 200, 120, 0
     
-    # The @make object allows you to construct shapes with named parameter
+    # The @drawX functions allow you to construct shapes with named parameter
     # lists to improve readability.
-    @make.rect {
+    @drawRect {
       x: 20
       y: 20
       width: 20
@@ -47,14 +47,14 @@ processing.do ->
     }
     
     # This nested @do block inherits the state 'scope' from the current @do
-    # block, so the @set.fill above is retained.
+    # block, so the @fillColor from above is retained.
     @do ->
-      @set.stroke = gray 200
-      @make.rect { x: 40, y: 40, width: 20, height: 20 }
+      @strokeColor = gray 200
+      @drawRect { x: 40, y: 40, width: 20, height: 20 }
   
   # Regular Processing functions can be called too if you don't like the
   # verbose syntax.
-  @rect 60, 60, 20, 20
+  @drawRect 60, 60, 20, 20
 </textarea>
 	</div>
 	<div class="output" id="output">

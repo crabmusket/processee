@@ -21,17 +21,18 @@ function hsv(h, s, v) {
 
 function processee(fn) {
 	return function(p) {
-		p.make = {
-			rect: function(r) {
-				p.rect(r.x || r.posX,
-					   r.y || r.posY,
-					   r.w || r.width,
-					   r.h || r.height);
-			},
+		p.drawRect = function(x, y, w, h) {
+			if(typeof x == 'object') {
+				p.rect(x.x || x.posX,
+				       x.y || x.posY,
+				       x.w || x.width,
+				       x.h || x.height);
+			} else {
+				p.rect(x, y, w, h);
+			}
 		};
 
-		p.set = {};
-		p.set.__defineSetter__("fill", function(c) {
+		p.__defineSetter__("fillColor", function(c) {
 			if(!c.mode) {
 				console.log('Cannot fill without a mode. Given:', c);
 				return;
@@ -41,7 +42,7 @@ function processee(fn) {
 			p.__stackSet();
 		});
 
-		p.set.__defineSetter__("stroke", function(c) {
+		p.__defineSetter__("strokeColor", function(c) {
 			if(!c.mode) {
 				console.log('Cannot stroke without a mode. Given:', c);
 				return;

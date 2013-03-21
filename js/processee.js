@@ -16,12 +16,6 @@ function processee(fn) {
 				}
 			},
 		};
-		p.setup = function() {
-			//reset();
-		};
-		p.draw = function() {
-			fn.call(p);
-		};
 		p.reset = function() {
 			p.fill(255);
 			p.stroke(0);
@@ -30,6 +24,12 @@ function processee(fn) {
 			set.call(p);
 			fn.call(p);
 			p.reset();
+		};
+		p.setup = function() {
+			p.reset();
+		};
+		p.draw = function() {
+			fn.call(p);
 		};
 	}
 };

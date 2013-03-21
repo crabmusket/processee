@@ -16,11 +16,6 @@ $(document).ready(function() {
 
 	window.run = function() {
 		$('#output').toggle(true);
-		function using(set, fn) {
-			set();
-			fn();
-			//reset();
-		};
 		eval(CoffeeScript.compile(window.cm.getValue()));
 	};
 
@@ -32,23 +27,6 @@ $(document).ready(function() {
 	$('.output').click(function() {
 		stop();
 	});
-
-	function processingShim(p) {
-		var shim = {};
-		for(key in p) {
-			shim[key] = p[key];
-		}
-		shim.reset = function() {
-			p.fill(255);
-			p.stroke(0);
-		};
-		shim.with = function(set, fn) {
-			set.call(shim);
-			fn.call(shim);
-			shim.reset();
-		};
-		return shim;
-	};
 
 	var processing = {
 		do: function(fn) {

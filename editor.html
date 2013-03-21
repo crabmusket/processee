@@ -20,8 +20,8 @@
 processing.do ->
   # Set the canvas size.
   @size 200, 300
-  # Change the background color constantly.
-  @background (@frameCount % 255)
+  # Make the background transparent.
+  @background 0, 0
   # @with takes two functions. The first defines settings, the second
   # the procedure to call with those settings. The state is reset after
   # the second function is called.

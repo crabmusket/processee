@@ -1,0 +1,78 @@
+html, body {
+	padding: 0;
+	margin: 0;
+	overflow: hidden;
+	height: 100%;
+}
+
+.CodeMirror-scroll {
+	height: 100%;
+	overflow-y: auto;
+	overflow-x: auto;
+}
+
+.CodeMirror {
+	width: 100%;
+	height: 100%;
+	cursor: text;
+}
+
+.editor {
+	height: 100%;
+	width: 100%;
+}
+
+div.output {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	z-index: 10;
+}
+
+.output .black {
+	height: 100%;
+	width: 100%;
+	background: black;
+	opacity: 0.2;
+}
+
+.output canvas {
+	position: absolute;
+	left: 30%;
+	top: 30%;
+	z-index: 11;
+}
+
+.buttons {
+	position: fixed;
+	right: 20px;
+	top: 20px;
+	z-index: 15;
+}
+
+.button {
+	margin-bottom: 20px;
+	width: 50px;
+	height: 50px;
+	display: block;
+	background: darkBlue;
+	border-radius: 5px;
+	text-align: center;
+	line-height: 50px;
+	color: white;
+	text-transform: uppercase;
+	font-family: arial, sans;
+	font-weight: bold;
+}
+
+.button:hover {
+	background: blue;
+	cursor: pointer;
+}
+
+canvas:active, canvas:focus {
+	border: none;
+	outline: none;
+}

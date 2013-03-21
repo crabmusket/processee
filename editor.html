@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="./style/style.css">
+	<link rel="stylesheet" type="text/css" href="./style/codemirror.css">
+	<link rel="stylesheet" type="text/css" href="./style/monokai.css">
+	<script type="text/javascript" src="./lib/jquery.min.js"></script>
+	<script type="text/javascript" src="./lib/processing.min.js"></script>
+	<script type="text/javascript" src="./lib/coffee-script.min.js"></script>
+	<script type="text/javascript" src="./lib/codemirror.js"></script>
+	<script type="text/javascript" src="./lib/mode-coffeescript.js"></script>
+	<script type="text/javascript" src="./js/processee.js"></script>
+	<script type="text/javascript" src="./js/main.js"></script>
+</head>
+
+<body>
+	<div class="editor">
+<textarea id="codemirror">
+# To start Processing, pass processing.do a function to run each frame.
+processing.do ->
+  # Set the canvas size.
+  @size 200, 300
+  # Change the background color constantly.
+  @background (@frameCount % 255)
+  # @with takes two functions. The first defines settings, the second
+  # the procedure to call with those settings. The state is reset after
+  # the second function is called.
+  @with (-> @fill 0, 100, 200), ->
+    # @make allows you to pass object parameters to Processing's drawing
+	# functions for better readability.
+    @make.rect {
+      posX: 20
+      posY: 20
+      width: 20
+      height: 20
+    }
+  # You can also call regular Processing functions.
+  @with (-> @stroke 200, 100, 0), ->
+    @rect 40, 40, 20, 20
+</textarea>
+	</div>
+	<div class="output" id="output">
+		<div class="output black"></div>
+		<canvas class="output" id="processing"></canvas>
+	</div>
+	<div class="buttons">
+		<a class="button run" onclick="run();">Run</a>
+		<a class="button stop" onclick="stop();">Stop</a>
+	</div>
+</body>
+</html>

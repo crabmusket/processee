@@ -23,8 +23,8 @@ function processee(fn) {
 	return function(p) {
 		p.drawRect = function(x, y, w, h) {
 			if(typeof x == 'object') {
-				p.rect(x.x || x.posX,
-				       x.y || x.posY,
+				p.rect(x.x || x.posX || 0,
+				       x.y || x.posY || 0,
 				       x.w || x.width,
 				       x.h || x.height);
 			} else {

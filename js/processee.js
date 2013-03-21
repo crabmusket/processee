@@ -34,7 +34,7 @@ function processee(fn) {
 
 		p.__defineSetter__("fillColor", function(c) {
 			if(!c.mode) {
-				console.log('Cannot fill without a mode. Given:', c);
+				console.log('Cannot set fill without a color mode. Given:', c);
 				return;
 			}
 			p.__stack[p.__stack.length-1].mode = c.mode == 'hsv' ? p.HSV : p.RGB;
@@ -44,7 +44,7 @@ function processee(fn) {
 
 		p.__defineSetter__("strokeColor", function(c) {
 			if(!c.mode) {
-				console.log('Cannot stroke without a mode. Given:', c);
+				console.log('Cannot set stroke without a color mode. Given:', c);
 				return;
 			}
 			p.__stack[p.__stack.length-1].stroke = {x: c.x, y: c.y, z: c.z};

@@ -5,6 +5,10 @@ html, body {
 	height: 100%;
 }
 
+a, a:hover {
+	text-decoration: none;
+}
+
 .CodeMirror-scroll {
 	height: 100%;
 	overflow-y: auto;

@@ -73,6 +73,17 @@ function processee(fn) {
 			p.__stackSet();
 		});
 
+		p.__defineSetter__("origin", function(o) {
+			var c = p.__stack[p.__stack.length-1].origin;
+			p.translate(-c.x, -c.y);
+			p.__stack[p.__stack.length-1].origin = {
+				x: (o.x || o.posX || 0),
+				y: (o.y || o.posY || 0)
+			};
+			p.translate(o.x || o.posX || 0, o.y || o.posY || 0);
+			p.__stackSet();
+		});
+
 		p.__stackSet = function() {
 			var c = p.__stack[p.__stack.length-1];
 			p.colorMode(c.mode);
@@ -85,10 +96,12 @@ function processee(fn) {
 				mode: c.mode,
 				fill: c.fill,
 				stroke: c.stroke,
+				origin: {x: 0, y: 0},
 			});
 		};
 		p.__stackPop = function() {
-			p.__stack.pop();
+			var o = p.__stack.pop();
+			p.translate(-o.origin.x, -o.origin.y);
 			p.__stackSet();
 		};
 
@@ -97,6 +110,7 @@ function processee(fn) {
 				mode: p.RGB,
 				fill: { x: 255, y: 255, z: 255 },
 				stroke: { x: 0, y: 0, z: 0 },
+				origin: { x: 0, y: 0 },
 			}];
 			p.__stackSet();
 		};
@@ -104,6 +118,18 @@ function processee(fn) {
 		p.do = function(fn) {
 			p.__stackPush();
 			fn.call(p);
+			p.__stackPop();
+		};
+
+		p.at = function(pos, fn) {
+			p.__stackPush();
+			p.origin = {
+				x: pos.x || pos.posX || 0,
+				y: pos.y || pos.posY || 0
+			};
+			p.__stackPush();
+			fn.call(p);
+			p.__stackPop();
 			p.__stackPop();
 		};
 

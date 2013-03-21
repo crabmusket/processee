@@ -51,10 +51,13 @@ processing.do ->
     @do ->
       @strokeColor = gray 200
       @drawRect { x: 40, y: 40, width: 20, height: 20 }
-  
-  # Regular Processing functions can be called too if you don't like the
-  # verbose syntax.
-  @drawRect 60, 60, 20, 20
+    
+    # The @at block is syntax sugar for a @do block that only translates the
+    # current state.
+    @at { x: 100, y: 100 }, ->
+      # Regular Processing functions can be called too if you don't like the
+      # verbose syntax.
+      @drawRect 0, 0, 20, 20
 </textarea>
 	</div>
 	<div class="output" id="output">

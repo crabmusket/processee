@@ -5,6 +5,13 @@ function rgb(r, g, b) {
 	};
 }
 
+function rgba(r, g, b, a) {
+	return {
+		mode: 'rgb',
+		x: r, y: g, z: b, w: a
+	};
+}
+
 function gray(v) {
 	return {
 		mode: 'rgb',
@@ -33,8 +40,24 @@ function polar(r, theta) {
 	};
 }
 
+function dim(w, h) {
+	return {
+		w: w,
+		h: h,
+	};
+}
+
 function processee(fn) {
 	return function(p) {
+		p.__defineSetter__("canvasSize", function(s) {
+			p.size(s.w || s.width || 100,
+			       s.h || s.height || 100);
+		});
+
+		p.__defineSetter__("canvasBackground", function(c) {
+			p.background(c.x, c.y, c.z, c.w);
+		});
+
 		p.drawLine = function(x1, y1, x2, y2) {
 			if(typeof x1 == 'object') {
 				p.line(x1.from.x,

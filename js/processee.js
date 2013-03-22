@@ -19,8 +19,58 @@ function hsv(h, s, v) {
 	};
 }
 
+function point(x, y) {
+	return {
+		x: x,
+		y: y,
+	};
+}
+
+function polar(r, theta) {
+	return {
+		x: r * Math.cos(theta),
+		y: r * Math.sin(theta),
+	};
+}
+
 function processee(fn) {
 	return function(p) {
+		p.drawLine = function(x1, y1, x2, y2) {
+			if(typeof x1 == 'object') {
+				p.line(x1.from.x,
+				           x1.from.y,
+					   x1.to.x,
+					   x1.to.y);
+			} else {
+				p.line(x1, y1, x2, y2);
+			}
+		};
+
+		p.drawLinesBetween = function(points) {
+			if(points.length < 2) {
+				console.log('@drawLinesBetween needs at least 2 points!');
+				return;
+			}
+			for(var i = 1; i < points.length; i++) {
+				var p0 = points[i-1];
+				var p1 = points[i];
+				p.line(p0.x, p0.y, p1.x, p1.y);
+			}
+		};
+
+		p.drawTriangle = function(x1, y1, x2, y2, x3, y3) {
+			if(typeof x1 == 'object') {
+				p.triangle(x1.a.x || x1.a.posX || 0,
+				           x1.a.y || x1.a.posY || 0,
+				           x1.b.x || x1.b.posX || 0,
+				           x1.b.y || x1.b.posY || 0,
+					   x1.c.x || x1.c.posX || 0,
+				           x1.c.y || x1.c.posY || 0);
+			} else {
+				p.triangle(x1, y1, x2, y2, x3, y3);
+			}
+		};
+
 		p.drawRect = function(x, y, w, h) {
 			if(typeof x == 'object') {
 				p.rect(x.x || x.posX || 0,
@@ -29,6 +79,17 @@ function processee(fn) {
 				       x.h || x.height);
 			} else {
 				p.rect(x, y, w, h);
+			}
+		};
+
+		p.drawSquare = function(x, y, s) {
+			if(typeof x == 'object') {
+				p.rect(x.x || x.posX || 0,
+				       x.y || x.posY || 0,
+				       x.s || x.size || 0,
+				       x.s || x.size || 0);
+			} else {
+				p.rect(x, y, s, s);
 			}
 		};
 

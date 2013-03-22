@@ -13,8 +13,8 @@
 	<script type="text/javascript" src="./lib/codemirror.js"></script>
 	<script type="text/javascript" src="./lib/mode-coffeescript.js"></script>
 
-	<script type="text/javascript" src="./js/processee.js"></script>
 	<script type="text/javascript" src="./js/main.js"></script>
+	<script type="text/javascript" src="./js/processee.js"></script>
 </head>
 
 <body>
@@ -42,8 +42,8 @@ houseOfSolids = ->
     c: point 0, -30
   }
 
-# To start Processing, pass processing.do a function that draws a picture.
-processing.do ->
+# To start Processee, pass processee.do a function that draws a picture.
+processee.do ->
   # Set the canvas size.
   @canvasSize = dim 300, 200
   # Make the background transparent.
@@ -78,8 +78,8 @@ processing.do ->
 		<canvas class="output" id="processing"></canvas>
 	</div>
 	<div class="buttons">
-		<a class="button run" onclick="run();">Run</a>
-		<a class="button stop" onclick="stop();">Stop</a>
+		<a class="button run" onclick="processee.run();">Run</a>
+		<a class="button stop" onclick="processee.stop();">Stop</a>
 		<a class="button stop" href="http://github.com/eightyeight/processee">Git</a>
 	</div>
 </body>

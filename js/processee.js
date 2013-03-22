@@ -47,7 +47,7 @@ function dim(w, h) {
 	};
 }
 
-function processee(fn) {
+window.processee.create = function(procedures) {
 	return function(p) {
 		p.__defineSetter__("canvasSize", function(s) {
 			p.size(s.w || s.width || 100,
@@ -168,6 +168,7 @@ function processee(fn) {
 			p.__stackSet();
 		});
 
+		p.__stack = [];
 		p.__stackSet = function() {
 			var c = p.__stack[p.__stack.length-1];
 			p.colorMode(c.mode);
@@ -186,10 +187,15 @@ function processee(fn) {
 		p.__stackPop = function() {
 			var o = p.__stack.pop();
 			p.translate(-o.origin.x, -o.origin.y);
-			p.__stackSet();
+			if(p.__stack.length) {
+				p.__stackSet();
+			}
 		};
 
 		p.reset = function() {
+			while(p.__stack.length) {
+				p.__stackPop();
+			}
 			p.__stack = [{
 				mode: p.RGB,
 				fill: { x: 255, y: 255, z: 255 },
@@ -217,9 +223,20 @@ function processee(fn) {
 			p.__stackPop();
 		};
 
-		p.setup = function() {
-			p.reset();
+		p.rotatedBy = function(angle, fn) {
+			p.__stackPush();
+			p.rotation = angle;
+			p.__stackPush();
 			fn.call(p);
+			p.__stackPop();
+			p.__stackPop();
+		};
+
+		p.setup = function() {
+			for(var i = 0; i < procedures.length; i++) {
+				p.reset();
+				procedures[i].procedure.call(p);
+			}
 		};
 		p.draw = function() {
 		};

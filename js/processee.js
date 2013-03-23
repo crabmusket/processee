@@ -47,7 +47,7 @@ function dim(w, h) {
 	};
 }
 
-window.processee.create = function(procedures) {
+window.processee.create = function() {
 	return function(p) {
 		p.__defineSetter__("canvasSize", function(s) {
 			p.size(s.w || s.width || 100,
@@ -233,6 +233,13 @@ window.processee.create = function(procedures) {
 		};
 
 		p.setup = function() {
+			p.rectMode(p.CENTER);
+			var setups = window.processee.setups;
+			for(var i = 0; i < setups.length; i++) {
+				setups[i].call(p);
+			}
+			
+			var procedures = window.processee.procedures;
 			for(var i = 0; i < procedures.length; i++) {
 				p.reset();
 				procedures[i].procedure.call(p);

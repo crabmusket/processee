@@ -21,12 +21,17 @@ $(document).ready(function() {
 
 window.processee = {
 	procedures: [],
+	setups: [],
 
 	do: function(fn) {
 		window.processee.procedures.push({
 			layer: 1,
 			procedure: fn,
 		});
+	},
+
+	setup: function(fn) {
+		window.processee.setups.push(fn);
 	},
 
 	doOnLayer: function(layer, fn) {
@@ -42,7 +47,7 @@ window.processee = {
 		window.processee.procedures.sort(function(a, b) { return a.layer - b.layer; });
 		if(window.processingInstance) window.processingInstance.exit();
 		window.processingInstance = new Processing($('#processing')[0],
-			window.processee.create(window.processee.procedures));
+			window.processee.create());
 	},
 
 	stop: function() {

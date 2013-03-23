@@ -20,57 +20,40 @@
 <body>
 	<div class="editor">
 <textarea id="codemirror">
-houseOfLines = ->
-  @drawLinesBetween [
-    point -20, 20
-    point 20, 20
-    point 20, -20
-    point 0, -30
-    point -20, -20
-    point -20, 20
-  ]
+processee.setup ->
+  @canvasSize = dim 300, 300
+  @canvasBackground = gray 255
 
-houseOfSolids = ->
-  @drawSquare {
-    x: -20
-    y: -20
-    size: 40
-  }
-  @drawTriangle {
-    a: point -20, -20
-    b: point 20, -20
-    c: point 0, -30
-  }
-
-# To start Processee, pass processee.do a function that draws a picture.
 processee.do ->
-  # Set the canvas size.
-  @canvasSize = dim 300, 200
-  # Make the background transparent.
-  @canvasBackground = rgba 0, 0, 0, 0
-  
-  # Draw two houses using the functions defined above.
-  @do ->
-    @fillColor = rgb 200, 100, 0
-    @at {x: 50, y: 50}, houseOfLines
-    @at {x: 150, y: 50}, houseOfSolids
+  @at {x: 150, y: 250}, stalk
+  @at {x: 150, y: 100}, petals
+  @at {x: 175, y: 210}, leaf
+  @at {x: 125, y: 230}, leaf
 
-  # Draw a yellow sun. Notice how the state set above does not 'leak' into
-  # the @do block.
-  @do ->
-    @origin = point 300, 0
-    @fillColor = rgb 255, 255, 50
-    @drawCircle { radius: 30 }
+stalk = ->
+  @fillColor = rgb 0, 255, 0
+  @strokeColor = rgb 0, 255, 0
+  @drawRect {
+    width: 10
+    height: 200
+  }
 
-  # Draw the ground.
-  @do ->
-    @fillColor = @strokeColor = rgb 0, 170, 0
-    @drawRect {
-      x: 0
-      y: 70
-      width: 300
-      height: 50
-    }
+petals = ->
+  @fillColor = rgb 255, 0, 0
+  @strokeColor = rgb 255, 0, 0
+  for angle in [0, Math.PI / 3, Math.PI / 6]
+    @rotatedBy angle, ->
+      @drawSquare {
+        size: 100
+      }
+
+leaf = ->
+  @fillColor = rgb 0, 255, 0
+  @strokeColor = rgb 0, 255, 0
+  @drawEllipse {
+    width: 40
+    height: 20
+  }
 </textarea>
 	</div>
 	<div class="output" id="output">

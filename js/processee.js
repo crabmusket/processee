@@ -168,6 +168,14 @@ window.processee.create = function() {
 			p.__stackSet();
 		});
 
+		p.__defineSetter__("rotation", function(r) {
+			var c = p.__stack[p.__stack.length-1];
+			p.rotate(-c.rotation);
+			p.__stack[p.__stack.length-1].rotation = r;
+			p.rotate(r);
+			p.__stackSet();
+		});
+
 		p.__stack = [];
 		p.__stackSet = function() {
 			var c = p.__stack[p.__stack.length-1];
@@ -182,11 +190,13 @@ window.processee.create = function() {
 				fill: c.fill,
 				stroke: c.stroke,
 				origin: {x: 0, y: 0},
+				rotation: 0,
 			});
 		};
 		p.__stackPop = function() {
 			var o = p.__stack.pop();
 			p.translate(-o.origin.x, -o.origin.y);
+			p.rotate(-o.rotation);
 			if(p.__stack.length) {
 				p.__stackSet();
 			}
@@ -201,6 +211,7 @@ window.processee.create = function() {
 				fill: { x: 255, y: 255, z: 255 },
 				stroke: { x: 0, y: 0, z: 0 },
 				origin: { x: 0, y: 0 },
+				rotation: 0,
 			}];
 			p.__stackSet();
 		};

@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	window.cm = CodeMirror.fromTextArea($('#codemirror')[0], {
-		//theme: 'monokai',
 		mode: 'processee',
+		theme: 'processee-light',
 		lineNumbers: true,
 	});
 

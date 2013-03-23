@@ -39,21 +39,23 @@ stalk = ->
     height: 200
   }
 
-petals = ->
-  @fillColor = rgb 255, 0, 0
-  @strokeColor = rgb 255, 0, 0
-  for angle in [0, Math.PI / 3, Math.PI / 6]
-    @rotatedBy angle, ->
-      @drawSquare {
-        size: 100
-      }
-
 leaf = ->
   @fillColor = rgb 0, 255, 0
   @strokeColor = rgb 0, 255, 0
   @drawEllipse {
     width: 40
     height: 20
+  }
+
+petals = ->
+  for angle in [0, Math.PI/3, Math.PI/6]
+    @rotatedBy angle, petal
+
+petal = ->
+  @fillColor = rgb 255, 0, 0
+  @strokeColor = rgb 255, 0, 0
+  @drawSquare {
+    size: 100
   }
 </textarea>
 	</div>

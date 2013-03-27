@@ -1,17 +1,17 @@
 .cm-s-processee-light span.cm-meta {color: #FF1717;}
-.cm-s-processee-light span.cm-keyword { line-height: 1em; font-weight: bold; color: blue; }
+.cm-s-processee-light span.cm-keyword { font-weight: bold; color: #9F0099;}
 .cm-s-processee-light span.cm-atom {color: #219;}
 .cm-s-processee-light span.cm-number {color: #164;}
 .cm-s-processee-light span.cm-def {color: #00f;}
 .cm-s-processee-light span.cm-variable {color: black;}
 .cm-s-processee-light span.cm-variable-2 {color: #0000C0;}
 .cm-s-processee-light span.cm-variable-3 {color: #0000C0;}
-.cm-s-processee-light span.cm-property {color: #7F0055;}
+.cm-s-processee-light span.cm-property {color: #0000AA;}
 .cm-s-processee-light span.cm-operator {color: black;}
 .cm-s-processee-light span.cm-comment {color: #3F7F5F;}
-.cm-s-processee-light span.cm-string {color: #2A00FF;}
+.cm-s-processee-light span.cm-string {color: #CC0000;}
 .cm-s-processee-light span.cm-string-2 {color: #f50;}
-.cm-s-processee-light span.cm-error {color: black; background: rgba(255, 0, 0, 0.2);}
+.cm-s-processee-light span.cm-error {background: rgba(255, 0, 0, 0.2);}
 .cm-s-processee-light span.cm-qualifier {color: #555;}
 .cm-s-processee-light span.cm-builtin {color: #30a;}
 .cm-s-processee-light span.cm-bracket {color: #cc7;}

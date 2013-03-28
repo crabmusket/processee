@@ -138,6 +138,20 @@ window.processee.create = function() {
 			}
 		};
 
+		p.drawImage = function(file, x, y, w, h) {
+			if(p.__imageData[file] !== undefined) {
+				if(typeof x == 'object') {
+					h = x.h || x.height;
+					w = x.w || x.width;
+					y = x.y || x.yPos;
+					x = x.x || x.xPos;
+				}
+				$('#processing')[0].getContext('2d').putImageData(p.__imageData[file], x, y);
+			} else {
+				console.log('Image file "' + file + '" has not been loaded.');
+			}
+		};
+
 		p.__defineSetter__("fillColor", function(c) {
 			if(!c.mode) {
 				console.log('Cannot set fill without a color mode. Given:', c);
@@ -216,6 +230,46 @@ window.processee.create = function() {
 			p.__stackSet();
 		};
 
+		p.__images = [];
+		p.__imageData = {};
+
+		p.loadImage = function(file) {
+			p.__images.push(file);
+		};
+
+		$('#processee-image-loader').load(function() {
+			var img = $('#processee-image-loader');
+			var file = img.attr('src');
+			console.log('loaded image with file', file);
+			if(file == '') {
+				return;
+			}
+			var width = img.width(), height = img.height();
+			console.log('file loaded', width);
+			var canvas = $('#processee-internal-canvas')[0];
+			canvas.width = width;
+			canvas.height = height;
+			var ctx = canvas.getContext('2d');
+			ctx.drawImage(img[0], 0, 0);
+			var data = ctx.getImageData(0, 0, width, height);
+			p.__imageData[file] = data;
+			p.__loadImages();
+		});
+
+		p.__loadNextImage = function(file) {
+			$('#processee-image-loader')
+				.attr('src', file);
+		};
+
+		p.__loadImages = function() {
+			if(!p.__images.length) {
+				$('#processee-image-loader').attr('src', '');
+				p.__onSetup();
+			} else {
+				p.__loadNextImage(p.__images.pop());
+			}
+		};
+
 		p.do = function(fn) {
 			p.__stackPush();
 			fn.call(p);
@@ -250,12 +304,17 @@ window.processee.create = function() {
 				setups[i].call(p);
 			}
 			
+			p.__loadImages(); // Calls __onSetup eventually
+		};
+
+		p.__onSetup = function() {
 			var procedures = window.processee.procedures;
 			for(var i = 0; i < procedures.length; i++) {
 				p.reset();
 				procedures[i].procedure.call(p);
 			}
 		};
+
 		p.draw = function() {
 		};
 	}

@@ -164,16 +164,26 @@ window.processee.create = function() {
 			}
 		};
 
-		p.newImage = function(name, file) {
-			var img = p.__imageData[file];
-			if(img !== undefined) {
-				var nimg = $('#processee-internal-canvas')[0].getContext('2d').createImageData(img.width, img.height);
-				nimg.data.set(img.data);
-				p.__imageData[name] = nimg;
-				return nimg;
+		p.newImage = function(name, w, h) {
+			if(typeof w == 'string') {
+				var file = w;
+				var img = p.__imageData[file];
+				if(img !== undefined) {
+					var nimg = $('#processee-internal-canvas')[0].getContext('2d').createImageData(img.width, img.height);
+					nimg.data.set(img.data);
+				} else {
+					console.log('Image file "' + file + '" has not been loaded.');
+					return;
+				}
 			} else {
-				console.log('Image file "' + file + '" has not been loaded.');
+				if(typeof w == 'object') {
+					h = w.height || w.h;
+					w = w.width || w.w;
+				}
+				var nimg = $('#processee-internal-canvas')[0].getContext('2d').createImageData(w, h);
 			}
+			p.__imageData[name] = nimg;
+			return nimg;
 		};
 
 		p.toEachPixelOf = function(file, fn) {

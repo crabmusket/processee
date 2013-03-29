@@ -112,14 +112,15 @@ processee.setup ->
 
 processee.do ->
   @canvasSize = @sizeOfImage "lenna.jpg"
-  @forEachGridOf "lenna.jpg", blur
+  @forEachGridOf "lenna.jpg", @convolveWith {
+    matrix: [
+      1, 1, 1,
+      1, 1, 1,
+      1, 1, 1,
+    ]
+    scale: 1/9
+  }
   @drawImage "lenna.jpg"
-
-blur = (pixels) ->
-  sumR = (pixels.reduce (a, b) -> { red: a.red + b.red}).red
-  sumG = (pixels.reduce (a, b) -> { green: a.green + b.green}).green
-  sumB = (pixels.reduce (a, b) -> { blue: a.blue + b.blue}).blue
-  rgb sumR/9, sumG/9, sumB/9
 </div>
 <div id="ex-sharpen">
 processee.setup ->
@@ -127,14 +128,12 @@ processee.setup ->
 
 processee.do ->
   @canvasSize = @sizeOfImage "lenna.jpg"
-  @forEachGridOf "lenna.jpg", sharpen
+  @forEachGridOf "lenna.jpg", @convolveWith [
+     0, -1,  0,
+    -1,  5, -1,
+     0, -1,  0,
+  ]
   @drawImage "lenna.jpg"
-
-sharpen = (pixels) ->
-  sumR = pixels[4].red*5 - pixels[1].red - pixels[3].red - pixels[5].red - pixels[7].red
-  sumG = pixels[4].green*5 - pixels[1].green - pixels[3].green - pixels[5].green - pixels[7].green
-  sumB = pixels[4].blue*5 - pixels[1].blue - pixels[3].blue - pixels[5].blue - pixels[7].blue
-  rgb sumR, sumG, sumB
 </div>
 	</div>
 </body>

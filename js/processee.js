@@ -251,6 +251,31 @@ window.processee.create = function() {
 			}
 		};
 
+		p.convolveWith = function(mat, scale) {
+			if(typeof mat == 'object' && !mat.length) {
+				scale = mat.scale;
+				mat = mat.matrix || mat.mat;
+			}
+			if(scale === undefined) {
+				scale = 1;
+			}
+			var diam = Math.sqrt(mat.length);
+			if(parseFloat(diam) != parseInt(diam)) {
+				console.log('Matrix', mat, 'is not square!');
+				return;
+			}
+			window.logCount = 0;
+			return function(pixels) {
+				var sumR = 0, sumG = 0, sumB = 0;
+				for(var i = 0; i < mat.length; i++) {
+					sumR += pixels[i].red * mat[i] * scale;
+					sumG += pixels[i].green * mat[i] * scale;
+					sumB += pixels[i].blue * mat[i] * scale;
+				}
+				return rgb(sumR, sumG, sumB);
+			};
+		};
+
 		p.__defineSetter__('fillColor', function(c) {
 			if(c === null) {
 				c = rgba(0, 0, 0, 0);

@@ -150,14 +150,14 @@ processee.setup ->
   @loadImage image
 
 processee.do ->
-  @canvasSize = @sizeOfImage image
+  @canvasSize = @sizeOf image
   @forEachGridOf image, median
   @drawImage image
 
 median = (pixels) ->
-  reds = (p.red for p in pixels).sort()
-  greens = (p.green for p in pixels).sort()
-  blues = (p.blue for p in pixels).sort()
+  reds = sort (p.red for p in pixels)
+  greens = sort (p.green for p in pixels)
+  blues = sort (p.blue for p in pixels)
   rgb reds[4], greens[4], blues[4]
 </div>
 	</div>

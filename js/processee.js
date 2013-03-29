@@ -47,6 +47,11 @@ function dim(w, h) {
 	};
 }
 
+function sort(a) {
+	a.sort();
+	return a;
+}
+
 window.processee.create = function() {
 	return function(p) {
 		p.__defineSetter__("canvasSize", function(s) {

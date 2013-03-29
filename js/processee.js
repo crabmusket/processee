@@ -152,6 +152,16 @@ window.processee.create = function() {
 			}
 		};
 
+		p.sizeOfImage = function(file) {
+			var img = p.__imageData[file];
+			if(img !== undefined) {
+				return {
+					width: img.width,
+					height: img.height,
+				};
+			}
+		};
+
 		p.__defineSetter__("fillColor", function(c) {
 			if(!c.mode) {
 				console.log('Cannot set fill without a color mode. Given:', c);
@@ -240,12 +250,10 @@ window.processee.create = function() {
 		$('#processee-image-loader').load(function() {
 			var img = $('#processee-image-loader');
 			var file = img.attr('src');
-			console.log('loaded image with file', file);
 			if(file == '') {
 				return;
 			}
 			var width = img.width(), height = img.height();
-			console.log('file loaded', width);
 			var canvas = $('#processee-internal-canvas')[0];
 			canvas.width = width;
 			canvas.height = height;

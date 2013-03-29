@@ -121,6 +121,21 @@ blur = (pixels) ->
   sumB = (pixels.reduce (a, b) -> { blue: a.blue + b.blue}).blue
   rgb sumR/9, sumG/9, sumB/9
 </div>
+<div id="ex-sharpen">
+processee.setup ->
+  @loadImage "lenna.jpg"
+
+processee.do ->
+  @canvasSize = @sizeOfImage "lenna.jpg"
+  @forEachGridOf "lenna.jpg", sharpen
+  @drawImage "lenna.jpg"
+
+sharpen = (pixels) ->
+  sumR = pixels[4].red*5 - pixels[1].red - pixels[3].red - pixels[5].red - pixels[7].red
+  sumG = pixels[4].green*5 - pixels[1].green - pixels[3].green - pixels[5].green - pixels[7].green
+  sumB = pixels[4].blue*5 - pixels[1].blue - pixels[3].blue - pixels[5].blue - pixels[7].blue
+  rgb sumR, sumG, sumB
+</div>
 	</div>
 </body>
 </html>

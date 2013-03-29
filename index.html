@@ -87,12 +87,24 @@ processee.setup ->
 
 processee.do ->
   @canvasSize = @sizeOfImage "lenna.jpg"
-  @toEachPixelOf "lenna.jpg", (pixel) ->
-    if pixel.red + pixel.green + pixel.blue > 382
-      gray 255
-    else
-      gray 0
+  @forEachPixelOf "lenna.jpg", threshold
   @drawImage "lenna.jpg"
+
+threshold = (pixel) ->
+  if pixel.red + pixel.green + pixel.blue > 382
+    gray 255
+  else
+    gray 0
+</div>
+<div id="ex-pixels">
+processee.do ->
+  @newImage "img", { width: 255, height: 255 }
+  @canvasSize = @sizeOfImage "img"
+  @forEachPixelOf "img", chooseColor
+  @drawImage "img"
+
+chooseColor = (pixel) ->
+  gray ((pixel.x + pixel.y) % 255)
 </div>
 	</div>
 </body>

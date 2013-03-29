@@ -197,7 +197,10 @@ window.processee.create = function() {
 			}
 		};
 
-		p.__defineSetter__("fillColor", function(c) {
+		p.__defineSetter__('fillColor', function(c) {
+			if(c === null) {
+				c = rgba(0, 0, 0, 0);
+			}
 			if(!c.mode) {
 				console.log('Cannot set fill without a color mode. Given:', c);
 				return;
@@ -206,8 +209,14 @@ window.processee.create = function() {
 			p.__stack[p.__stack.length-1].fill = {red: c.red, green: c.green, blue: c.blue, alpha: c.alpha};
 			p.__stackSet();
 		});
+		p.__defineGetter__('fillColor', function() {
+			return p.__stack[p.__stack.length-1].fill;
+		});
 
-		p.__defineSetter__("strokeColor", function(c) {
+		p.__defineSetter__('strokeColor', function(c) {
+			if(c === null) {
+				c = rgba(0, 0, 0, 0);
+			}
 			if(!c.mode) {
 				console.log('Cannot set stroke without a color mode. Given:', c);
 				return;
@@ -215,8 +224,11 @@ window.processee.create = function() {
 			p.__stack[p.__stack.length-1].stroke = {red: c.red, green: c.green, blue: c.blue, alpha: c.alpha};
 			p.__stackSet();
 		});
+		p.__defineGetter__('strokeColor', function() {
+			return p.__stack[p.__stack.length-1].stroke;
+		});
 
-		p.__defineSetter__("origin", function(o) {
+		p.__defineSetter__('origin', function(o) {
 			var c = p.__stack[p.__stack.length-1].origin;
 			p.translate(-c.x, -c.y);
 			p.__stack[p.__stack.length-1].origin = {
@@ -226,13 +238,19 @@ window.processee.create = function() {
 			p.translate(o.x || o.posX || 0, o.y || o.posY || 0);
 			p.__stackSet();
 		});
+		p.__defineGetter__('origin', function() {
+			return p.__stack[p.__stack.length-1].origin;
+		});
 
-		p.__defineSetter__("rotation", function(r) {
+		p.__defineSetter__('rotation', function(r) {
 			var c = p.__stack[p.__stack.length-1];
 			p.rotate(-c.rotation);
 			p.__stack[p.__stack.length-1].rotation = r;
 			p.rotate(r);
 			p.__stackSet();
+		});
+		p.__defineGetter__('rotation', function() {
+			return p.__stack[p.__stack.length-1].rotation;
 		});
 
 		p.__stack = [];

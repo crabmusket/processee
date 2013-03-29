@@ -25,7 +25,7 @@ Processing has some problems.
 
 ##Interested?
 
-[Check out the demo](http://eightyeight.github.com/processee).
+[Check out the demo](http://eightyeight.github.com/processee/#flower).
 
 ## Made with
 

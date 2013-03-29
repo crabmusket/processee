@@ -32,6 +32,8 @@ window.processee = {
 	stop: function() {
 		$('#output').toggle(false);
 		if(window.processingInstance) window.processingInstance.exit();
+		window.processee.procedures = [];
+		window.processee.setups = [];
 	},
 };
 

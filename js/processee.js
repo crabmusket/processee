@@ -164,7 +164,7 @@ window.processee.create = function() {
 			}
 		};
 
-		p.newImage = function(name, w, h) {
+		p.makeNewImage = function(name, w, h) {
 			if(typeof w == 'string') {
 				var file = w;
 				var img = p.__imageData[file];

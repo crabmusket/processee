@@ -98,7 +98,7 @@ threshold = (pixel) ->
 </div>
 <div id="ex-pixels">
 processee.do ->
-  @newImage "img", { width: 255, height: 255 }
+  @makeNewImage "img", { width: 255, height: 255 }
   @canvasSize = @sizeOfImage "img"
   @forEachPixelOf "img", chooseColor
   @drawImage "img"

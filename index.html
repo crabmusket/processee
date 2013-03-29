@@ -106,6 +106,21 @@ processee.do ->
 chooseColor = (pixel) ->
   gray ((pixel.x + pixel.y) % 255)
 </div>
+<div id="ex-blur">
+processee.setup ->
+  @loadImage "lenna.jpg"
+
+processee.do ->
+  @canvasSize = @sizeOfImage "lenna.jpg"
+  @forEachGridOf "lenna.jpg", blur
+  @drawImage "lenna.jpg"
+
+blur = (pixels) ->
+  sumR = (pixels.reduce (a, b) -> { red: a.red + b.red}).red
+  sumG = (pixels.reduce (a, b) -> { green: a.green + b.green}).green
+  sumB = (pixels.reduce (a, b) -> { blue: a.blue + b.blue}).blue
+  rgb sumR/9, sumG/9, sumB/9
+</div>
 	</div>
 </body>
 </html>

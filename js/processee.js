@@ -186,22 +186,70 @@ window.processee.create = function() {
 			return nimg;
 		};
 
+		function getPixelFromArray(a, i) {
+			return {
+				red: a[i],
+				green: a[i+1],
+				blue: a[i+2],
+				alpha: a[i+3],
+			};
+		};
+
+		function setArrayFromPixel(a, i, p) {
+			a[i] = p.red;
+			a[i+1] = p.green;
+			a[i+2] = p.blue;
+			a[i+3] = p.alpha;
+		};
+
 		p.forEachPixelOf = function(file, fn) {
 			var img = p.__imageData[file];
 			if(img !== undefined) {
+				var tempData = $('#processee-internal-canvas')[0].getContext('2d').createImageData(img.width, img.height);
+				var x = 0, y = 0;
 				for(var i = 0; i < img.data.length; i+=4) {
-					var pixel = {
-						red: img.data[i],
-						green: img.data[i+1],
-						blue: img.data[i+2],
-						alpha: img.data[i+3],
-					};
+					var pixel = getPixelAromArray(img.data, i);
+					pixel.x = x;
+					pixel.y = y;
 					var result = fn.call(p, pixel);
-					img.data[i] = result.red;
-					img.data[i+1] = result.green;
-					img.data[i+2] = result.blue;
-					img.data[i+3] = result.alpha;
+					setArrayFromPixel(tempData.data, i, result);
+					if(++x == img.width) {
+						x = 0;
+						y++;
+					}
 				}
+				p.__imageData[file] = tempData;
+			} else {
+				console.log('Image file "' + file + '" has not been loaded.');
+			}
+		};
+
+		p.forEachGridOf = function(file, fn) {
+			var img = p.__imageData[file];
+			if(img !== undefined) {
+				var tempData = $('#processee-internal-canvas')[0].getContext('2d').createImageData(img.width, img.height);
+				for(var x = 1; x < img.width - 1; x++) {
+					for(var y = 1; y < img.height - 1; y++) {
+						var pixels = [];
+						var i = x*4 + y*4*img.width;
+						for(var dx = -1; dx < 2; dx++) {
+							for(var dy = -1; dy < 2; dy++) {
+								var di = (x + dx)*4 + (y + dy)*4*img.width;
+								var pixel = getPixelFromArray(img.data, di);
+								pixel.x = x + dx;
+								pixel.y = y + dy;
+								pixels.push(pixel);
+							}
+						}
+						if(!window.echo) {
+						console.log('pixels', pixels);
+						window.echo = true;
+						}
+						result = fn.call(p, pixels);
+						setArrayFromPixel(tempData.data, i, result);
+					}
+				}
+				p.__imageData[file] = tempData;
 			} else {
 				console.log('Image file "' + file + '" has not been loaded.');
 			}

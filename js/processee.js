@@ -61,9 +61,9 @@ window.processee.create = function() {
 		p.drawLine = function(x1, y1, x2, y2) {
 			if(typeof x1 == 'object') {
 				p.line(x1.from.x,
-				           x1.from.y,
-					   x1.to.x,
-					   x1.to.y);
+				       x1.from.y,
+				       x1.to.x,
+				       x1.to.y);
 			} else {
 				p.line(x1, y1, x2, y2);
 			}
@@ -87,7 +87,7 @@ window.processee.create = function() {
 				           x1.a.y || x1.a.posY || 0,
 				           x1.b.x || x1.b.posX || 0,
 				           x1.b.y || x1.b.posY || 0,
-					   x1.c.x || x1.c.posX || 0,
+				           x1.c.x || x1.c.posX || 0,
 				           x1.c.y || x1.c.posY || 0);
 			} else {
 				p.triangle(x1, y1, x2, y2, x3, y3);

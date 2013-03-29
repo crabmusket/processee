@@ -135,6 +135,21 @@ processee.do ->
   ]
   @drawImage "lenna.jpg"
 </div>
+<div id="ex-median">
+processee.setup ->
+  @loadImage "lenna.jpg"
+
+processee.do ->
+  @canvasSize = @sizeOfImage "lenna.jpg"
+  @forEachGridOf "lenna.jpg", median
+  @drawImage "lenna.jpg"
+
+median = (pixels) ->
+  reds = (p.red for p in pixels).sort()
+  greens = (p.green for p in pixels).sort()
+  blues = (p.blue for p in pixels).sort()
+  rgb reds[4], greens[4], blues[4]
+</div>
 	</div>
 </body>
 </html>

@@ -5,10 +5,6 @@ html, body {
 	height: 100%;
 }
 
-a, a:hover {
-	text-decoration: none;
-}
-
 .CodeMirror-scroll {
 	height: 100%;
 	overflow-y: auto;
@@ -67,8 +63,9 @@ div.output {
 	line-height: 50px;
 	color: white;
 	text-transform: uppercase;
-	font-family: arial, sans;
+	font-family: sans-serif;
 	font-weight: bold;
+	text-decoration: none;
 }
 
 .button:hover {
@@ -79,4 +76,37 @@ div.output {
 canvas:active, canvas:focus {
 	border: none;
 	outline: none;
+}
+
+.about {
+	position: absolute;
+	top: 0;
+	left: 50%;
+}
+
+.about .dialog {
+	width: 400px;
+	position: relative;
+	left: -220px;
+	top: 20px;
+	border-radius: 5px;
+	background-color: darkBlue;
+	color: white;
+	padding: 1em 2em;
+	font-family: sans-serif;
+	z-index: 500;
+}
+
+.about a {
+	color: gray;
+	text-decoration: none;
+}
+
+.about a:hover {
+	text-decoration: underline;
+}
+
+.about h2 {
+	padding-top: 0;
+	margin-top: 0;
 }

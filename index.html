@@ -20,7 +20,7 @@
 
 <body>
 	<div class="editor">
-    <textarea id="codemirror"></textarea>
+	<textarea id="codemirror"></textarea>
 	</div>
 	<div class="output" id="output">
 		<div class="output black"></div>
@@ -29,7 +29,7 @@
 	<div class="buttons">
 		<a class="button run" onclick="processee.run();">Run</a>
 		<a class="button stop" onclick="processee.stop();">Stop</a>
-		<a class="button stop" href="http://github.com/eightyeight/processee">Git</a>
+		<a class="button" onclick="toggleAbout();">?</a>
 	</div>
 	<div class="internals">
 		<canvas id="processee-internal-canvas"></canvas>
@@ -160,6 +160,23 @@ median = (pixels) ->
   blues = sort (p.blue for p in pixels)
   rgb reds[4], greens[4], blues[4]
 </div>
+		</div>
+	</div>
+	<div class="about">
+		<div class="dialog">
+			<h2>Demos</h2>
+			<ul>
+				<li><a href="#flower">Draw a simple flower. Inspired by Bret Victor</a></li>
+				<li><a href="#image">Load and display an image file</a></li>
+				<li><a href="#pixels">Create your own pixel array to work with</a></li>
+				<li><a href="#threshold">A threshold filter</a></li>
+				<li><a href="#sharpen">A sharpening filter using unsharp mask</a></li>
+				<li><a href="#blur">A simple blur filter</a></li>
+				<li><a href="#median">A median filter</a></li>
+			</ul>
+			<h2>Code</h2>
+			<p><a href="http://github.com/eightyeight/processee">GitHub</a></p>
+		</div>
 	</div>
 </body>
 </html>

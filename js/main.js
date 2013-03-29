@@ -8,6 +8,16 @@ window.setExampleByHash = function() {
 };
 window.addEventListener("hashchange", window.setExampleByHash, false);
 
+function hideAbout() {
+	$('.about').fadeOut('fast');
+};
+function showAbout() {
+	$('.about').fadeIn('fast');
+};
+function toggleAbout() {
+	$('.about').fadeToggle('fast');
+}
+
 $(document).ready(function() {
 	window.cm = CodeMirror.fromTextArea($('#codemirror')[0], {
 		mode: 'processee',
@@ -28,5 +38,8 @@ $(document).ready(function() {
 	$('.output').click(function() {
 		window.processee.stop();
 	});
+
+	$('.about').toggle();
+	$('.about a').click(hideAbout);
 });
 

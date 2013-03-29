@@ -36,12 +36,14 @@
 		<img id="processee-image-loader"></img>
 		<div class="examples">
 <div id="ex-image">
+image = "monalisa.jpg"
+
 processee.setup ->
-  @loadImage "monalisa.jpg"
+  @loadImage image
 
 processee.do ->
-  @canvasSize = @sizeOfImage "monalisa.jpg"
-  @drawImage "monalisa.jpg"
+  @canvasSize = @sizeOfImage image
+  @drawImage image
 </div>
 <div id="ex-flower">
 processee.setup ->
@@ -82,13 +84,15 @@ petal = ->
   }
 </div>
 <div id="ex-threshold">
+image = "lenna.jpg"
+
 processee.setup ->
-  @loadImage "lenna.jpg"
+  @loadImage image
 
 processee.do ->
-  @canvasSize = @sizeOfImage "lenna.jpg"
-  @forEachPixelOf "lenna.jpg", threshold
-  @drawImage "lenna.jpg"
+  @canvasSize = @sizeOfImage image
+  @forEachPixelOf image, threshold
+  @drawImage image
 
 threshold = (pixel) ->
   if pixel.red + pixel.green + pixel.blue > 382
@@ -107,12 +111,14 @@ chooseColor = (pixel) ->
   gray ((pixel.x + pixel.y) % 255)
 </div>
 <div id="ex-blur">
+image = "lenna.jpg"
+
 processee.setup ->
-  @loadImage "lenna.jpg"
+  @loadImage image
 
 processee.do ->
-  @canvasSize = @sizeOfImage "lenna.jpg"
-  @forEachGridOf "lenna.jpg", @convolveWith {
+  @canvasSize = @sizeOfImage image
+  @forEachGridOf image, @convolveWith {
     matrix: [
       1, 1, 1,
       1, 1, 1,
@@ -120,29 +126,33 @@ processee.do ->
     ]
     scale: 1/9
   }
-  @drawImage "lenna.jpg"
+  @drawImage image
 </div>
 <div id="ex-sharpen">
+image = "lenna.jpg"
+
 processee.setup ->
-  @loadImage "lenna.jpg"
+  @loadImage image
 
 processee.do ->
-  @canvasSize = @sizeOfImage "lenna.jpg"
-  @forEachGridOf "lenna.jpg", @convolveWith [
+  @canvasSize = @sizeOfImage image
+  @forEachGridOf image, @convolveWith [
      0, -1,  0,
     -1,  5, -1,
      0, -1,  0,
   ]
-  @drawImage "lenna.jpg"
+  @drawImage image
 </div>
 <div id="ex-median">
+image = "monalisa.jpg"
+
 processee.setup ->
-  @loadImage "lenna.jpg"
+  @loadImage image
 
 processee.do ->
-  @canvasSize = @sizeOfImage "lenna.jpg"
-  @forEachGridOf "lenna.jpg", median
-  @drawImage "lenna.jpg"
+  @canvasSize = @sizeOfImage image
+  @forEachGridOf image, median
+  @drawImage image
 
 median = (pixels) ->
   reds = (p.red for p in pixels).sort()

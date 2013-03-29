@@ -208,7 +208,7 @@ window.processee.create = function() {
 				var tempData = $('#processee-internal-canvas')[0].getContext('2d').createImageData(img.width, img.height);
 				var x = 0, y = 0;
 				for(var i = 0; i < img.data.length; i+=4) {
-					var pixel = getPixelAromArray(img.data, i);
+					var pixel = getPixelFromArray(img.data, i);
 					pixel.x = x;
 					pixel.y = y;
 					var result = fn.call(p, pixel);

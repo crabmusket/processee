@@ -1,6 +1,6 @@
 .cm-s-processee-light span.cm-meta {color: #FF1717;}
-.cm-s-processee-light span.cm-keyword { font-weight: bold; color: #9F0099;}
-.cm-s-processee-light span.cm-atom {color: #219;}
+.cm-s-processee-light span.cm-keyword,
+.cm-s-processee-light span.cm-atom {font-weight: bold; color: #9F0099;}
 .cm-s-processee-light span.cm-number {color: #164;}
 .cm-s-processee-light span.cm-def {color: #00f;}
 .cm-s-processee-light span.cm-variable {color: black;}

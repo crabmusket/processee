@@ -42,7 +42,7 @@ processee.setup ->
   @loadImage image
 
 processee.do ->
-  @canvasSize = @sizeOfImage image
+  @canvasSize = @sizeOf image
   @drawImage image
 </div>
 <div id="ex-flower">
@@ -90,7 +90,7 @@ processee.setup ->
   @loadImage image
 
 processee.do ->
-  @canvasSize = @sizeOfImage image
+  @canvasSize = @sizeOf image
   @forEachPixelOf image, threshold
   @drawImage image
 
@@ -103,7 +103,7 @@ threshold = (pixel) ->
 <div id="ex-pixels">
 processee.do ->
   @makeNewImage "img", { width: 255, height: 255 }
-  @canvasSize = @sizeOfImage "img"
+  @canvasSize = @sizeOf "img"
   @forEachPixelOf "img", chooseColor
   @drawImage "img"
 
@@ -117,7 +117,7 @@ processee.setup ->
   @loadImage image
 
 processee.do ->
-  @canvasSize = @sizeOfImage image
+  @canvasSize = @sizeOf image
   @forEachGridOf image, @convolveWith {
     matrix: [
       1, 1, 1,
@@ -135,7 +135,7 @@ processee.setup ->
   @loadImage image
 
 processee.do ->
-  @canvasSize = @sizeOfImage image
+  @canvasSize = @sizeOf image
   @forEachGridOf image, @convolveWith [
      0, -1,  0,
     -1,  5, -1,

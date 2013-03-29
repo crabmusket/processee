@@ -154,7 +154,7 @@ window.processee.create = function() {
 			}
 		};
 
-		p.sizeOfImage = function(file) {
+		p.sizeOf = function(file) {
 			var img = p.__imageData[file];
 			if(img !== undefined) {
 				return {

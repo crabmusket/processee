@@ -81,6 +81,19 @@ petal = ->
     size: 100
   }
 </div>
+<div id="ex-image-filter">
+processee.setup ->
+  @loadImage "lenna.jpg"
+
+processee.do ->
+  @canvasSize = @sizeOfImage "lenna.jpg"
+  @toEachPixelOf "lenna.jpg", (pixel) ->
+    if pixel.red + pixel.green + pixel.blue > 382
+      gray 255
+    else
+      gray 0
+  @drawImage "lenna.jpg"
+</div>
 	</div>
 </body>
 </html>

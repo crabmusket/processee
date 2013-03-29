@@ -1,28 +1,28 @@
 function rgb(r, g, b) {
 	return {
 		mode: 'rgb',
-		x: r, y: g, z: b,
+		red: r, green: g, blue: b, alpha: 255,
 	};
 }
 
 function rgba(r, g, b, a) {
 	return {
 		mode: 'rgb',
-		x: r, y: g, z: b, w: a
+		red: r, green: g, blue: b, alpha: a
 	};
 }
 
 function gray(v) {
 	return {
 		mode: 'rgb',
-		x: v, y: v, z: v,
+		red: v, green: v, blue: v, alpha: 255,
 	};
 }
 
 function hsv(h, s, v) {
 	return {
 		mode: 'hsv',
-		x: h, y: s, z: v,
+		red: h, green: s, blue: v, alpha: 255,
 	};
 }
 
@@ -55,7 +55,7 @@ window.processee.create = function() {
 		});
 
 		p.__defineSetter__("canvasBackground", function(c) {
-			p.background(c.x, c.y, c.z, c.w);
+			p.background(c.red, c.green, c.blue, c.alpha);
 		});
 
 		p.drawLine = function(x1, y1, x2, y2) {
@@ -138,11 +138,13 @@ window.processee.create = function() {
 			}
 		};
 
-		p.drawImage = function(file, x, y, w, h) {
+		p.drawImage = function(file, x, y) {
 			if(p.__imageData[file] !== undefined) {
+				if(x === undefined) {
+					x = 0;
+					y = 0;
+				}
 				if(typeof x == 'object') {
-					h = x.h || x.height;
-					w = x.w || x.width;
 					y = x.y || x.yPos;
 					x = x.x || x.xPos;
 				}
@@ -162,13 +164,46 @@ window.processee.create = function() {
 			}
 		};
 
+		p.newImage = function(name, file) {
+			var img = p.__imageData[file];
+			if(img !== undefined) {
+				var nimg = $('#processee-internal-canvas')[0].getContext('2d').createImageData(img.width, img.height);
+				nimg.data.set(img.data);
+				p.__imageData[name] = nimg;
+				return nimg;
+			} else {
+				console.log('Image file "' + file + '" has not been loaded.');
+			}
+		};
+
+		p.toEachPixelOf = function(file, fn) {
+			var img = p.__imageData[file];
+			if(img !== undefined) {
+				for(var i = 0; i < img.data.length; i+=4) {
+					var pixel = {
+						red: img.data[i],
+						green: img.data[i+1],
+						blue: img.data[i+2],
+						alpha: img.data[i+3],
+					};
+					var result = fn.call(p, pixel);
+					img.data[i] = result.red;
+					img.data[i+1] = result.green;
+					img.data[i+2] = result.blue;
+					img.data[i+3] = result.alpha;
+				}
+			} else {
+				console.log('Image file "' + file + '" has not been loaded.');
+			}
+		};
+
 		p.__defineSetter__("fillColor", function(c) {
 			if(!c.mode) {
 				console.log('Cannot set fill without a color mode. Given:', c);
 				return;
 			}
 			p.__stack[p.__stack.length-1].mode = c.mode == 'hsv' ? p.HSV : p.RGB;
-			p.__stack[p.__stack.length-1].fill = {x: c.x, y: c.y, z: c.z};
+			p.__stack[p.__stack.length-1].fill = {red: c.red, green: c.green, blue: c.blue, alpha: c.alpha};
 			p.__stackSet();
 		});
 
@@ -177,7 +212,7 @@ window.processee.create = function() {
 				console.log('Cannot set stroke without a color mode. Given:', c);
 				return;
 			}
-			p.__stack[p.__stack.length-1].stroke = {x: c.x, y: c.y, z: c.z};
+			p.__stack[p.__stack.length-1].stroke = {red: c.red, green: c.green, blue: c.blue, alpha: c.alpha};
 			p.__stackSet();
 		});
 
@@ -204,8 +239,8 @@ window.processee.create = function() {
 		p.__stackSet = function() {
 			var c = p.__stack[p.__stack.length-1];
 			p.colorMode(c.mode);
-			p.fill(c.fill.x, c.fill.y, c.fill.z);
-			p.stroke(c.stroke.x, c.stroke.y, c.stroke.z);
+			p.fill(c.fill.red, c.fill.green, c.fill.blue, c.fill.alpha);
+			p.stroke(c.stroke.red, c.stroke.green, c.stroke.blue, c.stroke.alpha);
 		};
 		p.__stackPush = function() {
 			var c = p.__stack[p.__stack.length-1];
@@ -232,8 +267,8 @@ window.processee.create = function() {
 			}
 			p.__stack = [{
 				mode: p.RGB,
-				fill: { x: 255, y: 255, z: 255 },
-				stroke: { x: 0, y: 0, z: 0 },
+				fill: gray(255),
+				stroke: gray(0),
 				origin: { x: 0, y: 0 },
 				rotation: 0,
 			}];

@@ -186,7 +186,7 @@ window.processee.create = function() {
 			return nimg;
 		};
 
-		p.toEachPixelOf = function(file, fn) {
+		p.forEachPixelOf = function(file, fn) {
 			var img = p.__imageData[file];
 			if(img !== undefined) {
 				for(var i = 0; i < img.data.length; i+=4) {

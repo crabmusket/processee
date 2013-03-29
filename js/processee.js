@@ -241,10 +241,6 @@ window.processee.create = function() {
 								pixels.push(pixel);
 							}
 						}
-						if(!window.echo) {
-						console.log('pixels', pixels);
-						window.echo = true;
-						}
 						result = fn.call(p, pixels);
 						setArrayFromPixel(tempData.data, i, result);
 					}

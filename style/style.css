@@ -42,7 +42,24 @@ div.output {
 	position: absolute;
 	left: 10%;
 	top: 10%;
+	z-index: 12;
+}
+
+.webcam video {
+	position: absolute;
+	left: 10%;
+	top: 10%;
 	z-index: 11;
+}
+
+.webcam .cheese {
+	width: 20px;
+	height: 20px;
+	background: white;
+	z-index: 20;
+	position: absolute;
+	left: 10%;
+	top: 10%;
 }
 
 .buttons {

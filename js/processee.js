@@ -1,3 +1,7 @@
+navigator.getUserMedia ||
+	(navigator.getUserMedia = navigator.mozGetUserMedia ||
+	navigator.webkitGetUserMedia || navigator.msGetUserMedia);
+
 window.processee = {
 	procedures: [],
 	setups: [],
@@ -6,6 +10,54 @@ window.processee = {
 		window.processee.procedures.push({
 			layer: 1,
 			procedure: fn,
+		});
+	},
+
+	photobooth: function(fn) {
+		window.processee.procedures.push({
+			layer: 1,
+			procedure: function() {
+				var self = this;
+				var doWebcam = function() {
+					$('.webcam').toggle(true);
+					var video = $('#webcam');
+					video.toggle(true);
+
+					video[0].src = window.processee.source;
+					video[0].autoplay = true;
+
+					var takePicture = function(event) {
+						event.stopPropagation();
+						var canvas = $('#processee-internal-canvas')[0];
+						canvas.width = video[0].clientWidth;
+						canvas.height = video[0].clientHeight;
+						var context = canvas.getContext('2d');
+						context.drawImage(video[0], 0, 0, canvas.width, canvas.height);
+						self.__imageData["webcam"] = context.getImageData(0, 0, canvas.width, canvas.height);
+						fn.call(self);
+					};
+					$('#cheese').click(takePicture);
+				};
+
+				var success = function(stream) {
+					if(window.webkitURL) {
+						window.processee.source = window.webkitURL.createObjectURL(stream);
+					} else {
+						window.processee.source = stream;
+					}
+					doWebcam();
+				};
+
+				var error = function() {};
+
+				if(!window.processee.source) {
+					navigator.getUserMedia({
+						video: true,
+					}, success, error);
+				} else {
+					doWebcam();
+				}
+			},
 		});
 	},
 

@@ -25,6 +25,7 @@ $(document).ready(function() {
 		lineNumbers: true,
 	});
 
+	$('.webcam').toggle(false);
 	$('#output').toggle(false);
 	window.setExampleByHash();
 

@@ -24,6 +24,10 @@
 	</div>
 	<div class="output" id="output">
 		<div class="output black"></div>
+		<div class="webcam">
+			<video id="webcam"></video>
+			<div class="cheese" id="cheese"></div>
+		</div>
 		<canvas class="output" id="processing"></canvas>
 	</div>
 	<div class="buttons">
@@ -35,6 +39,12 @@
 		<canvas id="processee-internal-canvas"></canvas>
 		<img id="processee-image-loader"></img>
 		<div class="examples">
+<div id="ex-webcam">
+image = "webcam"
+processee.photobooth ->
+  @canvasSize = @sizeOf image
+  @drawImage image
+</div>
 <div id="ex-image">
 image = "monalisa.jpg"
 

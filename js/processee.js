@@ -284,13 +284,11 @@ window.processee.create = function() {
 			return nimg;
 		};
 
-		function getPixelFromArray(a, i) {
-			return {
-				red: a[i],
-				green: a[i+1],
-				blue: a[i+2],
-				alpha: a[i+3],
-			};
+		function getPixelFromArray(p, a, i) {
+			p.red = a[i];
+			p.green = a[i+1];
+			p.blue = a[i+2];
+			p.alpha = a[i+3];
 		};
 
 		function setArrayFromPixel(a, i, p) {
@@ -305,10 +303,12 @@ window.processee.create = function() {
 			if(img !== undefined) {
 				var tempData = $('#processee-internal-canvas')[0].getContext('2d').createImageData(img.width, img.height);
 				var x = 0, y = 0;
+				var pixel = {};
 				for(var i = 0; i < img.data.length; i+=4) {
-					var pixel = getPixelFromArray(img.data, i);
+					getPixelFromArray(pixel, img.data, i);
 					pixel.x = x;
 					pixel.y = y;
+					pixel.file = file;
 					var result = fn.call(p, pixel);
 					setArrayFromPixel(tempData.data, i, result);
 					if(++x == img.width) {
@@ -322,30 +322,28 @@ window.processee.create = function() {
 			}
 		};
 
-		p.forEachGridOf = function(file, fn) {
-			var img = p.__imageData[file];
-			if(img !== undefined) {
-				var tempData = $('#processee-internal-canvas')[0].getContext('2d').createImageData(img.width, img.height);
-				for(var x = 1; x < img.width - 1; x++) {
-					for(var y = 1; y < img.height - 1; y++) {
-						var pixels = [];
-						var i = x*4 + y*4*img.width;
-						for(var dx = -1; dx < 2; dx++) {
-							for(var dy = -1; dy < 2; dy++) {
-								var di = (x + dx)*4 + (y + dy)*4*img.width;
-								var pixel = getPixelFromArray(img.data, di);
-								pixel.x = x + dx;
-								pixel.y = y + dy;
-								pixels.push(pixel);
-							}
-						}
-						result = fn.call(p, pixels);
-						setArrayFromPixel(tempData.data, i, result);
+		p.forEachNeighborOf = function(pixel, fn) {
+			var x = pixel.x,
+			    y = pixel.y;
+			var img = p.__imageData[pixel.file];
+			if(!img) {
+				console.log("Pixel is not part of an image.");
+				return;
+			}
+			var len = img.width * img.height * 4;
+			var tmp = {};
+			tmp.file = pixel.file;
+			for(var dx = -1; dx < 2; dx++) {
+				for(var dy = -1; dy < 2; dy++) {
+					var di = (x+dx)*4 + (y+dy)*4*img.width;
+					if(di < 0 || di > len) {
+						continue;
 					}
+					getPixelFromArray(tmp, img.data, di);
+					tmp.x = x+dx;
+					tmp.y = y+dy;
+					fn.call(p, tmp);
 				}
-				p.__imageData[file] = tempData;
-			} else {
-				console.log('Image file "' + file + '" has not been loaded.');
 			}
 		};
 
@@ -362,16 +360,16 @@ window.processee.create = function() {
 				console.log('Matrix', mat, 'is not square!');
 				return;
 			}
-			window.logCount = 0;
-			return function(pixels) {
-				var sumR = 0, sumG = 0, sumB = 0;
-				for(var i = 0; i < mat.length; i++) {
-					sumR += pixels[i].red * mat[i] * scale;
-					sumG += pixels[i].green * mat[i] * scale;
-					sumB += pixels[i].blue * mat[i] * scale;
-				}
+			return function(pixel) {
+				var sumR = 0, sumG = 0, sumB = 0, i = 0;
+				p.forEachNeighborOf(pixel, function(pix) {
+					sumR += pix.red * mat[i] * scale;
+					sumG += pix.green * mat[i] * scale;
+					sumB += pix.blue * mat[i] * scale;
+					i++;
+				});
 				return rgb(sumR, sumG, sumB);
-			};
+			}
 		};
 
 		p.__defineSetter__('fillColor', function(c) {

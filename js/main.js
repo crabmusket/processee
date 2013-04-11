@@ -36,7 +36,9 @@ $(document).ready(function() {
 		var output = $('#output');
 		$('#output').css({
 			left: $(window).width() * 2/3 - $('#processing').width()/2,
-			top: $(window).height() / 10,
+			top: ($(window).height()/3 > $('#processing').height()/2)
+				? $(window).height() * 1/3 - $('#processing').height()/2
+				: $(window).height() * 1/2 - $('#processing').height()/2,
 		});
 	};
 

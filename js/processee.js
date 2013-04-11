@@ -298,6 +298,34 @@ window.processee.create = function() {
 			a[i+3] = p.alpha;
 		};
 
+		p.getImagePixel = function(file, x, y) {
+			var img = p.__imageData[file];
+			if(img !== undefined) {
+				if(typeof x == 'object') {
+					y = x.y;
+					x = x.x;
+				}
+				var i = x*4 + y*4*img.width;
+				if(i >= img.data.length) {
+					console.log("Pixel", x, y, "is out of bounds!");
+					return;
+				}
+				return getPixelFromArray(img.data, i);
+			} else {
+				console.log('Image file "' + file + '" has not been loaded.');
+			}
+		};
+
+		p.setImagePixel = function(file, pixel) {
+			var img = p.__imageData[file];
+			if(img !== undefined) {
+				var i = pixel.x*4 + pixel.y*4*img.width;
+				setArrayFromPixel(img.data, i, pixel);
+			} else {
+				console.log('Image file "' + file + '" has not been loaded.');
+			}
+		};
+
 		p.forEachPixelOf = function(file, fn) {
 			var img = p.__imageData[file];
 			if(img !== undefined) {
@@ -388,6 +416,17 @@ window.processee.create = function() {
 			return p.__stack[p.__stack.length-1].fill;
 		});
 
+		p.__defineSetter__('transparency', function(t) {
+			if(t === null) {
+				t = 0;
+			}
+			p.__stack[p.__stack.length-1].transparency = t;
+			p.__stackSet();
+		});
+		p.__defineGetter__('transparency', function() {
+			return p.__stack[p.__stack.length-1].transparency;
+		});
+
 		p.__defineSetter__('strokeColor', function(c) {
 			if(c === null) {
 				c = rgba(0, 0, 0, 0);
@@ -434,6 +473,7 @@ window.processee.create = function() {
 			p.colorMode(c.mode);
 			p.fill(c.fill.red, c.fill.green, c.fill.blue, c.fill.alpha);
 			p.stroke(c.stroke.red, c.stroke.green, c.stroke.blue, c.stroke.alpha);
+			$('#processing')[0].getContext('2d').globalAlpha = 1 - c.transparency;
 		};
 		p.__stackPush = function() {
 			var c = p.__stack[p.__stack.length-1];
@@ -443,6 +483,7 @@ window.processee.create = function() {
 				stroke: c.stroke,
 				origin: {x: 0, y: 0},
 				rotation: 0,
+				transparency: c.transparency,
 			});
 		};
 		p.__stackPop = function() {
@@ -464,6 +505,7 @@ window.processee.create = function() {
 				stroke: gray(0),
 				origin: { x: 0, y: 0 },
 				rotation: 0,
+				transparency: 0,
 			}];
 			p.__stackSet();
 		};

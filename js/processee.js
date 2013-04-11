@@ -310,7 +310,9 @@ window.processee.create = function() {
 					console.log("Pixel", x, y, "is out of bounds!");
 					return;
 				}
-				return getPixelFromArray(img.data, i);
+				var pixel = {};
+				getPixelFromArray(pixel, img.data, i);
+				return pixel;
 			} else {
 				console.log('Image file "' + file + '" has not been loaded.');
 			}

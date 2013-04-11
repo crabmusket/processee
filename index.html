@@ -55,6 +55,54 @@ processee.do ->
     pixel
   @drawImage image
 </div>
+<div id="ex-pixelate">
+image = "landscape.jpg"
+pixelated = "pixelated"
+
+pixelSize = 5
+
+processee.setup ->
+  @loadImage image
+
+processee.do ->
+  @canvasSize = @sizeOf image
+  @makeNewImage pixelated, image
+  @forEachPixelOf pixelated, (pixel) ->
+    pixel.x = pixel.x - (pixel.x % pixelSize)
+    pixel.y = pixel.y - (pixel.y % pixelSize)
+    return @getImagePixel pixelated, pixel
+  @drawImage pixelated
+</div>
+<div id="ex-pixelatemask">
+image = "landscape.jpg"
+pixelated = "pixelated"
+
+maxPixelSize = 10
+distScale = 1/100
+focalPoint = {
+  x: 800
+  y: 200
+}
+
+processee.setup ->
+  @loadImage image
+
+processee.do ->
+  @canvasSize = @sizeOf image
+  @makeNewImage pixelated, image
+  dx = 0
+  dy = 0
+  @forEachPixelOf pixelated, (pixel) ->
+    dist = Math.sqrt(Math.pow(focalPoint.x - pixel.x, 2) + Math.pow(focalPoint.y - pixel.y, 2))
+    dist = Math.floor(dist * distScale)
+    if dist is 0
+      return pixel
+    size = Math.min(maxPixelSize, dist)
+    pixel.x = pixel.x - (pixel.x % size)
+    pixel.y = pixel.y - (pixel.y % size)
+    @getImagePixel pixelated, pixel
+  @drawImage pixelated
+</div>
 <div id="ex-webcam">
 image = "webcam"
 processee.photobooth ->

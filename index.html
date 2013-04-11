@@ -76,9 +76,8 @@ processee.do ->
 # Inspired by PicMonkey's Focal Pixelate effect.
 # Daniel Buckmaster, 2013
 
-# Some global variables holding the image names.
+# Hold the image file name in a global variable.
 image = "landscape.jpg"
-pixelated = "pixelated"
 
 # Constants related to the effect. Change these to change
 # the way the effect is applied.
@@ -97,12 +96,10 @@ processee.setup ->
 processee.do ->
   # Scale the canvas to the size of the image.
   @canvasSize = @sizeOf image
-  # Copy the image data into a new buffer called "pixelated".
-  @makeNewImage pixelated, image
   # This helper calls a function on every pixel in the image, and puts the
   # return values into a new image map of the same dimensions. After all
   # pixels are processed, the old image data is replaced with the new.
-  @forEachPixelOf pixelated, (pixel) ->
+  @forEachPixelOf image, (pixel) ->
     # First, calculate the distance (in pixels) to the focal point.
     dist = Math.sqrt(Math.pow(focalPoint.x - pixel.x, 2) + Math.pow(focalPoint.y - pixel.y, 2))
     # Scale it a bit and round down.
@@ -121,9 +118,9 @@ processee.do ->
       dx = pixel.x - (pixel.x % size)
       dy = pixel.y - (pixel.y % size)
       # Return the value of the pixel at the new coordinates.
-      @getImagePixel pixelated, dx, dy
+      @getImagePixel image, dx, dy
   # Finally, draw the transformed image.
-  @drawImage pixelated
+  @drawImage image
 </div>
 <div id="ex-webcam">
 image = "webcam"
@@ -142,19 +139,29 @@ processee.do ->
   @drawImage image
 </div>
 <div id="ex-flower">
+# Add a setup step. In this one, we set the canvas size and background color.
+# You can do these things from anywhere, really, but this is a sensible
+# place to put them.
 processee.setup ->
   @canvasSize = dim 300, 300
   @canvasBackground = gray 255
 
+# This is an actual draw instruction. Processee will do this step once. You
+# can define multiple 'do' steps in the same way.
 processee.do ->
+  # This does a specific function, but moves any output to the location given.
   @at {x: 150, y: 250}, stalk
   @at {x: 150, y: 100}, petals
   @at {x: 175, y: 210}, leaf
   @at {x: 125, y: 230}, leaf
 
+# This function will draw the flower's stalk - just a big green rectangle.
 stalk = ->
+  # These lines set some properties of the drawing environment. It's like
+  # saying 'dip my brush in green paint'!
   @fillColor = rgb 0, 255, 0
   @strokeColor = rgb 0, 255, 0
+  # This call makes a rectangle shape appear at the point we're drawing at.
   @drawRect {
     width: 10
     height: 200
@@ -169,8 +176,13 @@ leaf = ->
   }
 
 petals = ->
+  # Setting transparency to greater than 0 makes all objects we draw inside
+  # this function a bit see-through.
   @transparency = 0.2
+  # This for loop performs its contents once for every item in the list (a
+  # list is a bunch of values between [square brackets].
   for angle in [0, Math.PI/3, Math.PI/6]
+    # This function rotates the canvas a bit before calling the petal function.
     @rotatedBy angle, petal
 
 petal = ->

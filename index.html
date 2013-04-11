@@ -39,6 +39,22 @@
 		<canvas id="processee-internal-canvas"></canvas>
 		<img id="processee-image-loader"></img>
 		<div class="examples">
+<div id="ex-overlay">
+image = "usyd.jpg"
+logo = "usyd-logo.png"
+
+processee.setup ->
+  @loadImage image
+  @loadImage logo
+
+processee.do ->
+  @canvasSize = @sizeOf image
+  @forEachPixelOf logo, (pixel) ->
+    if pixel.alpha > 0
+      @setImagePixel image, pixel
+    pixel
+  @drawImage image
+</div>
 <div id="ex-webcam">
 image = "webcam"
 processee.photobooth ->

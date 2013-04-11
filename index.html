@@ -173,6 +173,7 @@ leaf = ->
   }
 
 petals = ->
+  @transparency = 0.2
   for angle in [0, Math.PI/3, Math.PI/6]
     @rotatedBy angle, petal
 

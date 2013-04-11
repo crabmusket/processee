@@ -418,6 +418,17 @@ window.processee.create = function() {
 			return p.__stack[p.__stack.length-1].fill;
 		});
 
+		p.__defineSetter__('transparency', function(t) {
+			if(t === null) {
+				t = 0;
+			}
+			p.__stack[p.__stack.length-1].transparency = t;
+			p.__stackSet();
+		});
+		p.__defineGetter__('transparency', function() {
+			return p.__stack[p.__stack.length-1].transparency;
+		});
+
 		p.__defineSetter__('strokeColor', function(c) {
 			if(c === null) {
 				c = rgba(0, 0, 0, 0);
@@ -464,6 +475,7 @@ window.processee.create = function() {
 			p.colorMode(c.mode);
 			p.fill(c.fill.red, c.fill.green, c.fill.blue, c.fill.alpha);
 			p.stroke(c.stroke.red, c.stroke.green, c.stroke.blue, c.stroke.alpha);
+			$('#processing')[0].getContext('2d').globalAlpha = 1 - c.transparency;
 		};
 		p.__stackPush = function() {
 			var c = p.__stack[p.__stack.length-1];
@@ -473,6 +485,7 @@ window.processee.create = function() {
 				stroke: c.stroke,
 				origin: {x: 0, y: 0},
 				rotation: 0,
+				transparency: c.transparency,
 			});
 		};
 		p.__stackPop = function() {
@@ -494,6 +507,7 @@ window.processee.create = function() {
 				stroke: gray(0),
 				origin: { x: 0, y: 0 },
 				rotation: 0,
+				transparency: 0,
 			}];
 			p.__stackSet();
 		};

@@ -24,6 +24,10 @@ $(document).ready(function() {
 		mode: 'processee',
 		theme: 'processee-light',
 		lineNumbers: true,
+		tabMode: 'shift',
+		extraKeys: {
+			'Ctrl-Enter': window.processee.run,
+		},
 	});
 
 	$('.webcam').toggle(false);

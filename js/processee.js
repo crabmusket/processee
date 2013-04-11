@@ -73,18 +73,15 @@ window.processee = {
 	},
 
 	run: function() {
+		if(window.processingInstance) window.processingInstance.exit();
+		window.processee.procedures = [];
+		window.processee.setups = [];
+		$('#processing')[0].width = 0;
 		eval(CoffeeScript.compile(window.cm.getValue()));
 		window.processee.procedures.sort(function(a, b) { return a.layer - b.layer; });
 		if(window.processingInstance) window.processingInstance.exit();
 		window.processingInstance = new Processing($('#processing')[0],
 			window.processee.create());
-	},
-
-	stop: function() {
-		if(window.processingInstance) window.processingInstance.exit();
-		window.processee.procedures = [];
-		window.processee.setups = [];
-		$('#processing')[0].width = 0;
 	},
 };
 

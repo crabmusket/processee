@@ -4,6 +4,7 @@ window.setExampleByHash = function() {
 		if(text) {
 			window.cm.setValue(text);
 		}
+		window.processee.run();
 	}
 };
 window.addEventListener("hashchange", window.setExampleByHash, false);
@@ -26,7 +27,6 @@ $(document).ready(function() {
 	});
 
 	$('.webcam').toggle(false);
-	window.setExampleByHash();
 
 	window.positionOutput = function() {
 		var output = $('#output');
@@ -46,5 +46,7 @@ $(document).ready(function() {
 
 	$('.about').toggle();
 	$('.about a').click(hideAbout);
+
+	window.setExampleByHash();
 });
 

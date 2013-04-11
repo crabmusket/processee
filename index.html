@@ -115,7 +115,7 @@ processee.do ->
     else
       # Calculate the pixel size we want at this radius.
       size = Math.min(maxPixelSize, dist)
-		# Calculate the coordinates to read from by modding the coordinates
+      # Calculate the coordinates to read from by modding the coordinates
       # of the current pixel by the pixel size. This creates the pixelation
       # effect (see the '#pixelate' example).
       dx = pixel.x - (pixel.x % size)

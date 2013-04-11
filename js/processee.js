@@ -300,11 +300,31 @@ window.processee.create = function() {
 			a[i+3] = p.alpha;
 		};
 
+		p.getImagePixel = function(file, x, y) {
+			var img = p.__imageData[file];
+			if(img !== undefined) {
+				if(typeof x == 'object') {
+					y = x.y;
+					x = x.x;
+				}
+				var i = x*4 + y*4*img.width;
+				if(i >= img.data.length) {
+					console.log("Pixel", x, y, "is out of bounds!");
+					return;
+				}
+				return getPixelFromArray(img.data, i);
+			} else {
+				console.log('Image file "' + file + '" has not been loaded.');
+			}
+		};
+
 		p.setImagePixel = function(file, pixel) {
 			var img = p.__imageData[file];
 			if(img !== undefined) {
 				var i = pixel.x*4 + pixel.y*4*img.width;
 				setArrayFromPixel(img.data, i, pixel);
+			} else {
+				console.log('Image file "' + file + '" has not been loaded.');
 			}
 		};
 

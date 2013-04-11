@@ -74,33 +74,60 @@ processee.do ->
   @drawImage pixelated
 </div>
 <div id="ex-pixelatemask">
+# Pixelate mask
+# This effect pixelates an image a variable amount. At the 'focal point'
+# there is no pixelation. Regions further from the focal point are more
+# and more pixelated. The pixels get bigger the further you go.
+# Inspired by PicMonkey's Focal Pixelate effect.
+# Daniel Buckmaster, 2013
+
+# Some global variables holding the image names.
 image = "landscape.jpg"
 pixelated = "pixelated"
 
-maxPixelSize = 10
-distScale = 1/100
+# Constants related to the effect. Change these to change
+# the way the effect is applied.
+radius = 90
 focalPoint = {
-  x: 800
+  x: 750
   y: 200
 }
+maxPixelSize = 10
 
+# Asynchronously load the source image.
 processee.setup ->
   @loadImage image
 
+# Main function.
 processee.do ->
+  # Scale the canvas to the size of the image.
   @canvasSize = @sizeOf image
+  # Copy the image data into a new buffer called "pixelated".
   @makeNewImage pixelated, image
-  dx = 0
-  dy = 0
+  # This helper calls a function on every pixel in the image, and puts the
+  # return values into a new image map of the same dimensions. After all
+  # pixels are processed, the old image data is replaced with the new.
   @forEachPixelOf pixelated, (pixel) ->
+    # First, calculate the distance (in pixels) to the focal point.
     dist = Math.sqrt(Math.pow(focalPoint.x - pixel.x, 2) + Math.pow(focalPoint.y - pixel.y, 2))
-    dist = Math.floor(dist * distScale)
+    # Scale it a bit and round down.
+    dist = Math.floor(dist / radius)
+    # In CoffeeScript, the result of the last statement in a function is
+    # Returned. In this case we return the result of an if statement:
     if dist is 0
-      return pixel
-    size = Math.min(maxPixelSize, dist)
-    pixel.x = pixel.x - (pixel.x % size)
-    pixel.y = pixel.y - (pixel.y % size)
-    @getImagePixel pixelated, pixel
+      # For pixels very close to the focus, return their unmodified value.
+      pixel
+    else
+      # Calculate the pixel size we want at this radius.
+      size = Math.min(maxPixelSize, dist)
+		# Calculate the coordinates to read from by modding the coordinates
+      # of the current pixel by the pixel size. This creates the pixelation
+      # effect (see the '#pixelate' example).
+      dx = pixel.x - (pixel.x % size)
+      dy = pixel.y - (pixel.y % size)
+      # Return the value of the pixel at the new coordinates.
+      @getImagePixel pixelated, dx, dy
+  # Finally, draw the transformed image.
   @drawImage pixelated
 </div>
 <div id="ex-webcam">

@@ -24,31 +24,21 @@ html, body {
 
 div.output {
 	position: absolute;
-	top: 0;
-	left: 0;
-	height: 100%;
-	width: 100%;
 	z-index: 10;
-}
-
-.output .black {
-	height: 100%;
-	width: 100%;
-	background: black;
-	opacity: 0.2;
 }
 
 .output canvas {
 	position: absolute;
-	left: 10%;
-	top: 10%;
 	z-index: 12;
+	border: 1px solid gray;
+}
+
+canvas:active, canvas:focus {
+	outline: none;
 }
 
 .webcam video {
 	position: absolute;
-	left: 10%;
-	top: 10%;
 	z-index: 11;
 }
 
@@ -58,8 +48,6 @@ div.output {
 	background: white;
 	z-index: 20;
 	position: absolute;
-	left: 10%;
-	top: 10%;
 }
 
 .buttons {
@@ -88,11 +76,6 @@ div.output {
 .button:hover {
 	background: blue;
 	cursor: pointer;
-}
-
-canvas:active, canvas:focus {
-	border: none;
-	outline: none;
 }
 
 .about {

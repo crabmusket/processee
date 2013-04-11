@@ -26,19 +26,23 @@ $(document).ready(function() {
 	});
 
 	$('.webcam').toggle(false);
-	$('#output').toggle(false);
 	window.setExampleByHash();
+
+	window.positionOutput = function() {
+		var output = $('#output');
+		$('#output').css({
+			left: $(window).width() * 2/3 - $('#processing').width()/2,
+			top: $(window).height() / 10,
+		});
+	};
 
 	var resize = function() {
 		window.cm.setSize(null, $(window).height());
 		window.cm.refresh();
+		window.positionOutput();
 	};
 	$(window).resize(resize);
 	resize();
-
-	$('.output').click(function() {
-		window.processee.stop();
-	});
 
 	$('.about').toggle();
 	$('.about a').click(hideAbout);

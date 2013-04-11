@@ -73,17 +73,14 @@ window.processee = {
 	},
 
 	run: function() {
-		$('#output').fadeIn('fast', function() {
-			eval(CoffeeScript.compile(window.cm.getValue()));
-			window.processee.procedures.sort(function(a, b) { return a.layer - b.layer; });
-			if(window.processingInstance) window.processingInstance.exit();
-			window.processingInstance = new Processing($('#processing')[0],
-				window.processee.create());
-		});
+		eval(CoffeeScript.compile(window.cm.getValue()));
+		window.processee.procedures.sort(function(a, b) { return a.layer - b.layer; });
+		if(window.processingInstance) window.processingInstance.exit();
+		window.processingInstance = new Processing($('#processing')[0],
+			window.processee.create());
 	},
 
 	stop: function() {
-		$('#output').fadeOut('fast');
 		if(window.processingInstance) window.processingInstance.exit();
 		window.processee.procedures = [];
 		window.processee.setups = [];
@@ -150,6 +147,7 @@ window.processee.create = function() {
 		p.__defineSetter__("canvasSize", function(s) {
 			p.size(s.w || s.width || 100,
 			       s.h || s.height || 100);
+			window.positionOutput();
 		});
 
 		p.__defineSetter__("canvasBackground", function(c) {

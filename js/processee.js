@@ -300,6 +300,14 @@ window.processee.create = function() {
 			a[i+3] = p.alpha;
 		};
 
+		p.setImagePixel = function(file, pixel) {
+			var img = p.__imageData[file];
+			if(img !== undefined) {
+				var i = pixel.x*4 + pixel.y*4*img.width;
+				setArrayFromPixel(img.data, i, pixel);
+			}
+		};
+
 		p.forEachPixelOf = function(file, fn) {
 			var img = p.__imageData[file];
 			if(img !== undefined) {

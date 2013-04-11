@@ -48,11 +48,8 @@ processee.setup ->
 
 processee.do ->
   @canvasSize = @sizeOf image
-  @forEachPixelOf logo, (pixel) ->
-    if pixel.alpha > 0
-      @setImagePixel image, pixel
-    pixel
   @drawImage image
+  @drawImage logo
 </div>
 <div id="ex-pixelate">
 image = "landscape.jpg"

@@ -4,14 +4,8 @@ navigator.getUserMedia ||
 
 window.processee = {
 	procedures: [],
+	repeatedProcedures: [],
 	setups: [],
-
-	do: function(fn) {
-		window.processee.procedures.push({
-			layer: 1,
-			procedure: fn,
-		});
-	},
 
 	photobooth: function(fn) {
 		window.processee.procedures.push({
@@ -65,6 +59,13 @@ window.processee = {
 		window.processee.setups.push(fn);
 	},
 
+	do: function(fn) {
+		window.processee.procedures.push({
+			layer: 1,
+			procedure: fn,
+		});
+	},
+
 	doOnLayer: function(layer, fn) {
 		window.processee.procedures.push({
 			layer: layer,
@@ -72,13 +73,26 @@ window.processee = {
 		});
 	},
 
+	doEveryFrame: function(fn) {
+		window.processee.repeatedProcedures.push({
+			layer: 1,
+			procedure: fn,
+		});
+	},
+
 	run: function() {
 		if(window.processingInstance) window.processingInstance.exit();
 		window.processee.procedures = [];
+		window.processee.repeatedProcedures = [];
 		window.processee.setups = [];
 		$('#processing')[0].width = 0;
+
 		eval(CoffeeScript.compile(window.cm.getValue()));
-		window.processee.procedures.sort(function(a, b) { return a.layer - b.layer; });
+
+		var layerSort = function(a, b) { return a.layer - b.layer; };
+		window.processee.procedures.sort(layerSort);
+		window.processee.repeatedProcedures.sort(layerSort);
+
 		if(window.processingInstance) window.processingInstance.exit();
 		window.processingInstance = new Processing($('#processing')[0],
 			window.processee.create());
@@ -573,16 +587,18 @@ window.processee.create = function() {
 		};
 
 		p.setup = function() {
+			// Set some Processing defaults that are sane.
 			p.rectMode(p.CENTER);
+			// Call every setup function.
 			var setups = window.processee.setups;
 			for(var i = 0; i < setups.length; i++) {
 				setups[i].call(p);
 			}
-			
 			p.__loadImages(); // Calls __onSetup eventually
 		};
 
 		p.__onSetup = function() {
+			// Perform the do-once drawing routines.
 			var procedures = window.processee.procedures;
 			for(var i = 0; i < procedures.length; i++) {
 				p.reset();
@@ -591,6 +607,12 @@ window.processee.create = function() {
 		};
 
 		p.draw = function() {
+			// Perform the every-frame drawing routines.
+			var procedures = window.processee.repeatedProcedures;
+			for(var i = 0; i < procedures.length; i++) {
+				p.reset();
+				procedures[i].procedure.call(p);
+			}
 		};
 	}
 };

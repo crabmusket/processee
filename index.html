@@ -37,6 +37,29 @@
 		<canvas id="processee-internal-canvas"></canvas>
 		<img id="processee-image-loader"></img>
 		<div class="examples">
+<div id="ex-animate">
+processee.setup ->
+  @canvasSize = dim 300, 300
+  @canvasBackground = gray 255
+
+x = 0
+y = 0
+dx = 1.3
+dy = 0.9
+
+processee.doEveryFrame ->
+  # Uncomment this to disable the trail:
+  #@canvasBackground = gray 255
+  @drawSquare {
+    x: x
+    y: y
+    size: 20
+  }
+  x = x + dx
+  y = y + dy
+  dx = if x < 0 or x > 300 then -dx else dx
+  dy = if y < 0 or y > 300 then -dy else dy
+</div>
 <div id="ex-overlay">
 image = "usyd.jpg"
 logo = "usyd-logo.png"

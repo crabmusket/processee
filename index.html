@@ -37,6 +37,34 @@
 		<canvas id="processee-internal-canvas"></canvas>
 		<img id="processee-image-loader"></img>
 		<div class="examples">
+<div id="ex-edge">
+im = "monalisa.jpg"
+
+processee.setup ->
+  @loadImage im
+
+processee.do ->
+  @canvasSize = @sizeOf im
+  @forEachPixelOf im, edge
+  @drawImage im
+
+edge = (pixel) ->
+  img = pixel.file
+  left = @getImagePixel img, pixel.x - 1, pixel.y
+  right = @getImagePixel img, pixel.x + 1, pixel.y
+  dx = if left and right then pixelDiff left, right else 0
+  up = @getImagePixel img, pixel.x, pixel.y - 1
+  down = @getImagePixel img, pixel.x, pixel.y + 1
+  dy = if up and down then pixelDiff up, down else 0
+  avg = dx + dy / 2
+  if avg > 40
+    gray 255
+  else
+    gray 0
+
+pixelDiff = (p1, p2) ->
+  Math.abs (p1.red - p2.red + p1.green - p2.green + p1.blue - p2.blue) / 3
+</div>
 <div id="ex-animate">
 processee.setup ->
   @canvasSize = dim 300, 300

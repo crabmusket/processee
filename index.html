@@ -278,7 +278,7 @@ processee.setup ->
 
 processee.do ->
   @canvasSize = @sizeOf image
-  @forEachGridOf image, @convolveWith {
+  @forEachPixelOf image, @convolveWith {
     matrix: [
       1, 1, 1,
       1, 1, 1,
@@ -296,7 +296,7 @@ processee.setup ->
 
 processee.do ->
   @canvasSize = @sizeOf image
-  @forEachGridOf image, @convolveWith [
+  @forEachPixelOf image, @convolveWith [
      0, -1,  0,
     -1,  5, -1,
      0, -1,  0,
@@ -311,13 +311,19 @@ processee.setup ->
 
 processee.do ->
   @canvasSize = @sizeOf image
-  @forEachGridOf image, median
+  @forEachPixelOf image, median
   @drawImage image
 
-median = (pixels) ->
-  reds = sort (p.red for p in pixels)
-  greens = sort (p.green for p in pixels)
-  blues = sort (p.blue for p in pixels)
+median = (pixel) ->
+  reds = []
+  greens = []
+  blues = []
+  @forEachNeighborOf pixel, (n) -> reds.push n.red
+  @forEachNeighborOf pixel, (n) -> greens.push n.green
+  @forEachNeighborOf pixel, (n) -> blues.push n.blue
+  reds = sort reds
+  greens = sort greens
+  blues = sort blues
   rgb reds[4], greens[4], blues[4]
 </div>
 		</div>

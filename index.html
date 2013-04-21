@@ -139,58 +139,35 @@ processee.do ->
   @drawImage image
 </div>
 <div id="ex-flower">
-# Add a setup step. In this one, we set the canvas size and background color.
-# You can do these things from anywhere, really, but this is a sensible
-# place to put them.
 processee.setup ->
   @canvasSize = dim 300, 300
   @canvasBackground = gray 255
 
-# This is an actual draw instruction. Processee will do this step once. You
-# can define multiple 'do' steps in the same way.
 processee.do ->
-  # This does a specific function, but moves any output to the location given.
   @at {x: 150, y: 250}, stalk
   @at {x: 150, y: 100}, petals
   @at {x: 175, y: 210}, leaf
   @at {x: 125, y: 230}, leaf
 
-# This function will draw the flower's stalk - just a big green rectangle.
 stalk = ->
-  # These lines set some properties of the drawing environment. It's like
-  # saying 'dip my brush in green paint'!
   @fillColor = rgb 0, 255, 0
   @strokeColor = rgb 0, 255, 0
-  # This call makes a rectangle shape appear at the point we're drawing at.
-  @drawRect {
-    width: 10
-    height: 200
-  }
+  @drawRect {width: 10, height: 200}
 
 leaf = ->
   @fillColor = rgb 0, 255, 0
   @strokeColor = rgb 0, 255, 0
-  @drawEllipse {
-    width: 40
-    height: 20
-  }
+  @drawEllipse {width: 40, height: 20}
 
 petals = ->
-  # Setting transparency to greater than 0 makes all objects we draw inside
-  # this function a bit see-through.
   @transparency = 0.2
-  # This for loop performs its contents once for every item in the list (a
-  # list is a bunch of values between [square brackets].
   for angle in [0, Math.PI/3, Math.PI/6]
-    # This function rotates the canvas a bit before calling the petal function.
     @rotatedBy angle, petal
 
 petal = ->
   @fillColor = rgb 255, 0, 0
   @strokeColor = rgb 255, 0, 0
-  @drawSquare {
-    size: 100
-  }
+  @drawSquare {size: 100}
 </div>
 <div id="ex-threshold">
 image = "lenna.jpg"

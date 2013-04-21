@@ -37,6 +37,57 @@
 		<canvas id="processee-internal-canvas"></canvas>
 		<img id="processee-image-loader"></img>
 		<div class="examples">
+<div id="ex-edge">
+im = "monalisa.jpg"
+
+processee.setup ->
+  @loadImage im
+
+processee.do ->
+  @canvasSize = @sizeOf im
+  @forEachPixelOf im, edge
+  @drawImage im
+
+edge = (pixel) ->
+  img = pixel.file
+  left = @getImagePixel img, pixel.x - 1, pixel.y
+  right = @getImagePixel img, pixel.x + 1, pixel.y
+  dx = if left and right then pixelDiff left, right else 0
+  up = @getImagePixel img, pixel.x, pixel.y - 1
+  down = @getImagePixel img, pixel.x, pixel.y + 1
+  dy = if up and down then pixelDiff up, down else 0
+  avg = dx + dy / 2
+  if avg > 40
+    gray 255
+  else
+    gray 0
+
+pixelDiff = (p1, p2) ->
+  Math.abs (p1.red - p2.red + p1.green - p2.green + p1.blue - p2.blue) / 3
+</div>
+<div id="ex-animate">
+processee.setup ->
+  @canvasSize = dim 300, 300
+  @canvasBackground = gray 255
+
+x = 0
+y = 0
+dx = 1.3
+dy = 0.9
+
+processee.doEveryFrame ->
+  # Uncomment this to disable the trail:
+  #@canvasBackground = gray 255
+  @drawSquare {
+    x: x
+    y: y
+    size: 20
+  }
+  x = x + dx
+  y = y + dy
+  dx = if x < 0 or x > 300 then -dx else dx
+  dy = if y < 0 or y > 300 then -dy else dy
+</div>
 <div id="ex-overlay">
 image = "usyd.jpg"
 logo = "usyd-logo.png"
@@ -204,7 +255,7 @@ processee.setup ->
 
 processee.do ->
   @canvasSize = @sizeOf image
-  @forEachGridOf image, @convolveWith {
+  @forEachPixelOf image, @convolveWith {
     matrix: [
       1, 1, 1,
       1, 1, 1,
@@ -222,7 +273,7 @@ processee.setup ->
 
 processee.do ->
   @canvasSize = @sizeOf image
-  @forEachGridOf image, @convolveWith [
+  @forEachPixelOf image, @convolveWith [
      0, -1,  0,
     -1,  5, -1,
      0, -1,  0,
@@ -237,13 +288,19 @@ processee.setup ->
 
 processee.do ->
   @canvasSize = @sizeOf image
-  @forEachGridOf image, median
+  @forEachPixelOf image, median
   @drawImage image
 
-median = (pixels) ->
-  reds = sort (p.red for p in pixels)
-  greens = sort (p.green for p in pixels)
-  blues = sort (p.blue for p in pixels)
+median = (pixel) ->
+  reds = []
+  greens = []
+  blues = []
+  @forEachNeighborOf pixel, (n) -> reds.push n.red
+  @forEachNeighborOf pixel, (n) -> greens.push n.green
+  @forEachNeighborOf pixel, (n) -> blues.push n.blue
+  reds = sort reds
+  greens = sort greens
+  blues = sort blues
   rgb reds[4], greens[4], blues[4]
 </div>
 		</div>

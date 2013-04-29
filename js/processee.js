@@ -226,22 +226,32 @@ window.processee.create = function() {
 		};
 
 		p.makeNewImage = function(name, w, h) {
-			if(typeof w == 'string') {
-				var file = w;
-				var img = p.__getImage(file);
+			var nimg = undefined;
+			var copyFrom = undefined;
+			var dimensions = undefined;
+			if(typeof name == 'object') {
+				copyFrom = name.copyFrom;
+				dimensions = {
+					w: name.w || name.width || name.size.w || name.size.width,
+					h: name.h || name.height || name.size.h || name.size.height
+				};
+				name = name.name;
+			} else if(typeof w == 'string' || w.toString == '[object ImageData]') {
+				copyFrom = w;
+			} else {
+				dimensions = w;
+			}
+			if(copyFrom) {
+				var img = p.__getImage(copyFrom);
 				if(img !== undefined) {
-					var nimg = $('#processee-internal-canvas')[0].getContext('2d').createImageData(img.width, img.height);
+					nimg = $('#processee-internal-canvas')[0].getContext('2d').createImageData(img.width, img.height);
 					nimg.data.set(img.data);
 				} else {
-					console.log('Image file "' + file + '" has not been loaded.');
-					return;
+					console.log('Image file "' + copyFrom + '" has not been loaded.');
 				}
-			} else {
-				if(typeof w == 'object') {
-					h = w.height || w.h;
-					w = w.width || w.w;
-				}
-				var nimg = $('#processee-internal-canvas')[0].getContext('2d').createImageData(w, h);
+			} else if(dimensions) {
+				nimg = $('#processee-internal-canvas')[0].getContext('2d')
+					.createImageData(dimensions.w || dimensions.width, dimensions.h || dimensions.height);
 			}
 			if(name !== undefined) {
 				p.__imageData[name] = nimg;

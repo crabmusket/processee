@@ -59,21 +59,14 @@ window.processee = {
 		window.processee.setups.push(fn);
 	},
 
-	do: function(fn) {
+	once: function(fn) {
 		window.processee.procedures.push({
 			layer: 1,
 			procedure: fn,
 		});
 	},
 
-	doOnLayer: function(layer, fn) {
-		window.processee.procedures.push({
-			layer: layer,
-			procedure: fn,
-		});
-	},
-
-	doEveryFrame: function(fn) {
+	everyFrame: function(fn) {
 		window.processee.repeatedProcedures.push({
 			layer: 1,
 			procedure: fn,

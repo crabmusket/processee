@@ -7,54 +7,6 @@ window.processee = {
 	repeatedProcedures: [],
 	setups: [],
 
-	photobooth: function(fn) {
-		window.processee.procedures.push({
-			layer: 1,
-			procedure: function() {
-				var self = this;
-				var doWebcam = function() {
-					$('.webcam').toggle(true);
-					var video = $('#webcam');
-					video.toggle(true);
-
-					video[0].src = window.processee.source;
-					video[0].autoplay = true;
-
-					var takePicture = function(event) {
-						event.stopPropagation();
-						var canvas = $('#processee-internal-canvas')[0];
-						canvas.width = video[0].clientWidth;
-						canvas.height = video[0].clientHeight;
-						var context = canvas.getContext('2d');
-						context.drawImage(video[0], 0, 0, canvas.width, canvas.height);
-						self.__imageData["webcam"] = context.getImageData(0, 0, canvas.width, canvas.height);
-						fn.call(self);
-					};
-					$('#cheese').click(takePicture);
-				};
-
-				var success = function(stream) {
-					if(window.webkitURL) {
-						window.processee.source = window.webkitURL.createObjectURL(stream);
-					} else {
-						window.processee.source = stream;
-					}
-					doWebcam();
-				};
-
-				var error = function() {};
-
-				if(!window.processee.source) {
-					navigator.getUserMedia({
-						video: true,
-					}, success, error);
-				} else {
-					doWebcam();
-				}
-			},
-		});
-	},
-
 	setup: function(fn) {
 		window.processee.setups.push(fn);
 	},
@@ -515,6 +467,8 @@ window.processee.create = function() {
 		};
 
 		p.__images = [];
+		p.webcamImageName = "webcam";
+		p.webcam = false;
 		p.__imageData = {};
 
 		p.loadImage = function(file) {
@@ -579,6 +533,18 @@ window.processee.create = function() {
 			p.__stackPop();
 		};
 
+		p.__webcamCapture = function() {
+			$('.webcam').toggle(true);
+			var video = $('#webcam');
+			var canvas = $('#processee-internal-canvas')[0];
+			canvas.width = video[0].clientWidth;
+			canvas.height = video[0].clientHeight;
+			var context = canvas.getContext('2d');
+			context.drawImage(video[0], 0, 0, canvas.width, canvas.height);
+			p.__imageData[p.webcamImageName] = context.getImageData(0, 0, canvas.width, canvas.height);
+			$('.webcam').toggle(false);
+		};
+
 		p.setup = function() {
 			// Set some Processing defaults that are sane.
 			p.rectMode(p.CENTER);
@@ -587,10 +553,41 @@ window.processee.create = function() {
 			for(var i = 0; i < setups.length; i++) {
 				setups[i].call(p);
 			}
-			p.__loadImages(); // Calls __onSetup eventually
+
+			// Try to get the webcam if we need it, and after that's done load the images.
+			if(p.webcam) {
+				var video = $('#webcam');
+				var error = function() {};
+				var success = function(stream) {
+					if(window.webkitURL) {
+						window.processee.webcamSource = window.webkitURL.createObjectURL(stream);
+					} else {
+						window.processee.webcamSource = stream;
+					}
+					video[0].src = window.processee.webcamSource;
+					video[0].autoplay = true;
+					video[0].addEventListener("canplay", function () {
+						p.__loadImages();
+					});
+				};
+
+				if(!window.processee.webcamSource) {
+					navigator.getUserMedia({
+						video: true,
+					}, success, error);
+				} else {
+					p.__loadImages();
+				}
+			} else {
+				p.__loadImages(); // Calls __onSetup eventually
+			}
 		};
 
 		p.__onSetup = function() {
+			// Capture the webcam if we need to.
+			if(p.webcam) {
+				p.__webcamCapture();
+			}
 			// Perform the do-once drawing routines.
 			var procedures = window.processee.procedures;
 			for(var i = 0; i < procedures.length; i++) {
@@ -600,8 +597,15 @@ window.processee.create = function() {
 		};
 
 		p.draw = function() {
-			// Perform the every-frame drawing routines.
 			var procedures = window.processee.repeatedProcedures;
+			if(!procedures.length) {
+				return;
+			}
+			// Capture the webcam if we need to.
+			if(p.webcam) {
+				p.__webcamCapture();
+			}
+			// Perform the every-frame drawing routines.
 			for(var i = 0; i < procedures.length; i++) {
 				p.reset();
 				procedures[i].procedure.call(p);

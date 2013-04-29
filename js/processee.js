@@ -190,8 +190,17 @@ window.processee.create = function() {
 			}
 		};
 
+		p.__getImage = function(i) {
+			if(typeof i == "string") {
+				return p.__imageData[i];
+			} else {
+				return i;
+			}
+		};
+
 		p.drawImage = function(file, x, y) {
-			if(p.__imageData[file] !== undefined) {
+			file = p.__getImage(file);
+			if(file !== undefined) {
 				if(x === undefined) {
 					x = 0;
 					y = 0;
@@ -200,14 +209,14 @@ window.processee.create = function() {
 					y = x.y || x.yPos;
 					x = x.x || x.xPos;
 				}
-				$('#processing')[0].getContext('2d').putImageData(p.__imageData[file], x, y);
+				$('#processing')[0].getContext('2d').putImageData(file, x, y);
 			} else {
 				console.log('Image file "' + file + '" has not been loaded.');
 			}
 		};
 
 		p.sizeOf = function(file) {
-			var img = p.__imageData[file];
+			var img = p.__getImage(file);
 			if(img !== undefined) {
 				return {
 					width: img.width,
@@ -219,7 +228,7 @@ window.processee.create = function() {
 		p.makeNewImage = function(name, w, h) {
 			if(typeof w == 'string') {
 				var file = w;
-				var img = p.__imageData[file];
+				var img = p.__getImage(file);
 				if(img !== undefined) {
 					var nimg = $('#processee-internal-canvas')[0].getContext('2d').createImageData(img.width, img.height);
 					nimg.data.set(img.data);
@@ -234,7 +243,9 @@ window.processee.create = function() {
 				}
 				var nimg = $('#processee-internal-canvas')[0].getContext('2d').createImageData(w, h);
 			}
-			p.__imageData[name] = nimg;
+			if(name !== undefined) {
+				p.__imageData[name] = nimg;
+			}
 			return nimg;
 		};
 
@@ -253,7 +264,7 @@ window.processee.create = function() {
 		};
 
 		p.getImagePixel = function(file, x, y) {
-			var img = p.__imageData[file];
+			var img = p.__getImage(file);
 			if(img !== undefined) {
 				if(typeof x == 'object') {
 					y = x.y;
@@ -273,7 +284,7 @@ window.processee.create = function() {
 		};
 
 		p.setImagePixel = function(file, pixel) {
-			var img = p.__imageData[file];
+			var img = p.__getImage(file);
 			if(img !== undefined) {
 				var i = pixel.x*4 + pixel.y*4*img.width;
 				setArrayFromPixel(img.data, i, pixel);
@@ -283,7 +294,8 @@ window.processee.create = function() {
 		};
 
 		p.forEachPixelOf = function(file, fn) {
-			var img = p.__imageData[file];
+			var stored = typeof file == "string";
+			var img = p.__getImage(file);
 			if(img !== undefined) {
 				var tempData = $('#processee-internal-canvas')[0].getContext('2d').createImageData(img.width, img.height);
 				var x = 0, y = 0;
@@ -300,7 +312,10 @@ window.processee.create = function() {
 						y++;
 					}
 				}
-				p.__imageData[file] = tempData;
+				if(stored) {
+					p.__imageData[file] = tempData;
+				}
+				return tempData;
 			} else {
 				console.log('Image file "' + file + '" has not been loaded.');
 			}
@@ -309,7 +324,7 @@ window.processee.create = function() {
 		p.forEachNeighborOf = function(pixel, fn) {
 			var x = pixel.x,
 			    y = pixel.y;
-			var img = p.__imageData[pixel.file];
+			var img = p.__getImage(pixel.file);
 			if(!img) {
 				console.log("Pixel is not part of an image.");
 				return;

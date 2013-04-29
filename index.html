@@ -25,7 +25,6 @@
 	<div class="output" id="output">
 		<div class="webcam">
 			<video id="webcam"></video>
-			<div class="cheese" id="cheese"></div>
 		</div>
 		<canvas class="output" id="processing"></canvas>
 	</div>
@@ -174,10 +173,23 @@ processee.once ->
   @drawImage image
 </div>
 <div id="ex-webcam">
-image = "webcam"
-processee.photobooth ->
-  @canvasSize = @sizeOf image
-  @drawImage image
+processee.setup ->
+  @webcam = on
+
+processee.once ->
+  @canvasSize = @sizeOf "webcam"
+
+processee.everyFrame ->
+  @drawImage "webcam"
+</div>
+<div id="ex-photobooth">
+processee.setup ->
+  @webcam = on
+
+# Press Ctrl-Enter or the run button to take a snapshot!
+processee.once ->
+  @canvasSize = @sizeOf "webcam"
+  @drawImage "webcam"
 </div>
 <div id="ex-image">
 image = "monalisa.jpg"

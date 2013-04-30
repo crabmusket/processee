@@ -6,6 +6,7 @@ window.processee = {
 	procedures: [],
 	repeatedProcedures: [],
 	setups: [],
+	objects: [],
 
 	setup: function(fn) {
 		window.processee.setups.push(fn);
@@ -33,6 +34,13 @@ window.processee = {
 		});
 	},
 
+	object: function(obj) {
+		if(!obj.hasOwnProperty('layer') || typeof obj.layer != 'number') {
+			obj.layer = 1;
+		}
+		window.processee.objects.push(obj);
+	},
+
 	run: function() {
 		if(window.processingInstance) window.processingInstance.exit();
 		window.processee.procedures = [];
@@ -45,6 +53,7 @@ window.processee = {
 		var layerSort = function(a, b) { return a.layer - b.layer; };
 		window.processee.procedures.sort(layerSort);
 		window.processee.repeatedProcedures.sort(layerSort);
+		window.processee.objects.sort(layerSort);
 
 		if(window.processingInstance) window.processingInstance.exit();
 		window.processingInstance = new Processing($('#processing')[0],
@@ -627,6 +636,14 @@ window.processee.create = function() {
 				p.reset();
 				procedures[i].procedure.call(p);
 			}
+			// Setup objects.
+			var objects = window.processee.objects;
+			for(var i = 0; i < objects.length; i++) {
+				if(objects[i].hasOwnProperty('setup')) {
+					p.reset();
+					objects[i].setup.call(p, objects[i]);
+				}
+			}
 		};
 
 		p.draw = function() {
@@ -642,6 +659,14 @@ window.processee.create = function() {
 			for(var i = 0; i < procedures.length; i++) {
 				p.reset();
 				procedures[i].procedure.call(p);
+			}
+			// Draw objects.
+			var objects = window.processee.objects;
+			for(var i = 0; i < objects.length; i++) {
+				if(objects[i].hasOwnProperty('draw')) {
+					p.reset();
+					objects[i].draw.call(p, objects[i]);
+				}
 			}
 		};
 	}

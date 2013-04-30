@@ -11,16 +11,24 @@ window.processee = {
 		window.processee.setups.push(fn);
 	},
 
-	once: function(fn) {
+	once: function(conf, fn) {
+		if(typeof conf == 'function') {
+			fn = conf;
+			conf = { layer: undefined };
+		}
 		window.processee.procedures.push({
-			layer: 1,
+			layer: conf.layer || 1,
 			procedure: fn,
 		});
 	},
 
-	everyFrame: function(fn) {
+	everyFrame: function(conf, fn) {
+		if(typeof conf == 'function') {
+			fn = conf;
+			conf = { layer: undefined };
+		}
 		window.processee.repeatedProcedures.push({
-			layer: 1,
+			layer: conf.layer || 1,
 			procedure: fn,
 		});
 	},

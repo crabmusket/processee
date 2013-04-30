@@ -3,10 +3,20 @@ navigator.getUserMedia ||
 	navigator.webkitGetUserMedia || navigator.msGetUserMedia);
 
 window.processee = {
-	procedures: [],
-	repeatedProcedures: [],
+	layers = {},
 	setups: [],
-	objects: [],
+
+	getLayer: function(l) {
+		var layers = window.processee.layers;
+		if(layers[l] === undefined) {
+			layers[l] = {
+				once: [],
+				everyFrame: [],
+				objects: []
+			};
+		}
+		return layers[l];
+	},
 
 	setup: function(fn) {
 		window.processee.setups.push(fn);
@@ -17,10 +27,8 @@ window.processee = {
 			fn = conf;
 			conf = { layer: undefined };
 		}
-		window.processee.procedures.push({
-			layer: conf.layer || 1,
-			procedure: fn,
-		});
+		var layer = window.processee.getLayer(conf.layer || 1);
+		layer.once.push(fn);
 	},
 
 	everyFrame: function(conf, fn) {
@@ -28,17 +36,16 @@ window.processee = {
 			fn = conf;
 			conf = { layer: undefined };
 		}
-		window.processee.repeatedProcedures.push({
-			layer: conf.layer || 1,
-			procedure: fn,
-		});
+		var layer = window.processee.getLayer(conf.layer || 1);
+		layer.everyFrame.push(fn);
 	},
 
 	object: function(obj) {
 		if(!obj.hasOwnProperty('layer') || typeof obj.layer != 'number') {
 			obj.layer = 1;
 		}
-		window.processee.objects.push(obj);
+		var layer = window.processee.getLayer(obj.layer);
+		layer.objects.push(obj);
 	},
 
 	run: function() {
@@ -50,10 +57,11 @@ window.processee = {
 
 		eval(CoffeeScript.compile(window.cm.getValue()));
 
-		var layerSort = function(a, b) { return a.layer - b.layer; };
-		window.processee.procedures.sort(layerSort);
-		window.processee.repeatedProcedures.sort(layerSort);
-		window.processee.objects.sort(layerSort);
+		window.processee.layerOrder = [];
+		for(var l in window.processee.layers) {
+			window.processee.layerOrder.push(l);
+		}
+		window.processee.layerOrder.sort();
 
 		if(window.processingInstance) window.processingInstance.exit();
 		window.processingInstance = new Processing($('#processing')[0],
@@ -630,18 +638,21 @@ window.processee.create = function() {
 			if(p.webcam) {
 				p.__webcamCapture();
 			}
-			// Perform the do-once drawing routines.
-			var procedures = window.processee.procedures;
-			for(var i = 0; i < procedures.length; i++) {
-				p.reset();
-				procedures[i].procedure.call(p);
-			}
-			// Setup objects.
-			var objects = window.processee.objects;
-			for(var i = 0; i < objects.length; i++) {
-				if(objects[i].hasOwnProperty('setup')) {
+			// Call do-once routines and setup objects.
+			var layers = window.processee.layers;
+			var layerOrder = window.processee.layerOrder;
+			for(var i = 0; i < layerOrder.length; i++) {
+				var l = layerOrder[i];
+				var layer = layers[l];
+				for(var j = 0; j < layer.once.length; j++) {
 					p.reset();
-					objects[i].setup.call(p, objects[i]);
+					layer.once[j].call(p);
+				}
+				for(var j = 0; j < layer.objects.length; j++) {
+					p.reset();
+					if(layer.objects[j].hasOwnProperty('setup')) {
+						layer.objects[j].setup.call(p);
+					}
 				}
 			}
 		};
@@ -655,17 +666,21 @@ window.processee.create = function() {
 			if(p.webcam) {
 				p.__webcamCapture();
 			}
-			// Perform the every-frame drawing routines.
-			for(var i = 0; i < procedures.length; i++) {
-				p.reset();
-				procedures[i].procedure.call(p);
-			}
-			// Draw objects.
-			var objects = window.processee.objects;
-			for(var i = 0; i < objects.length; i++) {
-				if(objects[i].hasOwnProperty('draw')) {
+			// Call do-once routines and setup objects.
+			var layers = window.processee.layers;
+			var layerOrder = window.processee.layerOrder;
+			for(var i = 0; i < layerOrder.length; i++) {
+				var l = layerOrder[i];
+				var layer = layers[l];
+				for(var j = 0; j < layer.everyFrame.length; j++) {
 					p.reset();
-					objects[i].draw.call(p, objects[i]);
+					layer.everyFrame[j].call(p);
+				}
+				for(var j = 0; j < layer.objects.length; j++) {
+					p.reset();
+					if(layer.objects[j].hasOwnProperty('draw')) {
+						layer.objects[j].draw.call(p);
+					}
 				}
 			}
 		};

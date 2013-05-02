@@ -339,6 +339,28 @@ median = (pixel) ->
   blues = sort blues
   rgb reds[4], greens[4], blues[4]
 </div>
+<div id="ex-objects">
+class Square
+  constructor: (@pos, @vel) ->
+  draw: (self) ->
+    self.pos.x += self.vel.x
+    self.pos.y += self.vel.y
+    @at self.pos, ->
+      @strokeColor = rgb 0
+      @fillColor = rgb 255
+      @drawSquare {size: 20}
+
+s = new Square {x:0,y:0}, {x:1,y:1}
+p = new Square {x:0,y:300}, {x:1,y:-1}
+
+processee.objects [s, p]
+
+processee.setup ->
+  @canvasSize = dim 300, 300
+
+processee.everyFrame {layer:0}, ->
+  @canvasBackground = gray 255
+</div>
 		</div>
 	</div>
 	<div class="about">

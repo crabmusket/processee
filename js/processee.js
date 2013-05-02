@@ -3,7 +3,7 @@ navigator.getUserMedia ||
 	navigator.webkitGetUserMedia || navigator.msGetUserMedia);
 
 window.processee = {
-	layers = {},
+	layers: {},
 	setups: [],
 
 	getLayer: function(l) {
@@ -50,8 +50,7 @@ window.processee = {
 
 	run: function() {
 		if(window.processingInstance) window.processingInstance.exit();
-		window.processee.procedures = [];
-		window.processee.repeatedProcedures = [];
+		window.processee.layers = {};
 		window.processee.setups = [];
 		$('#processing')[0].width = 0;
 
@@ -658,8 +657,8 @@ window.processee.create = function() {
 		};
 
 		p.draw = function() {
-			var procedures = window.processee.repeatedProcedures;
-			if(!procedures.length) {
+			var layers = window.processee.layers;
+			if(!layers.length) {
 				return;
 			}
 			// Capture the webcam if we need to.
@@ -667,7 +666,6 @@ window.processee.create = function() {
 				p.__webcamCapture();
 			}
 			// Call do-once routines and setup objects.
-			var layers = window.processee.layers;
 			var layerOrder = window.processee.layerOrder;
 			for(var i = 0; i < layerOrder.length; i++) {
 				var l = layerOrder[i];

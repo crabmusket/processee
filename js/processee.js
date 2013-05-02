@@ -482,6 +482,7 @@ window.processee.create = function() {
 		};
 		p.__stackPush = function() {
 			var c = p.__stack[p.__stack.length-1];
+			p.pushMatrix();
 			p.__stack.push({
 				mode: c.mode,
 				fill: c.fill,
@@ -493,8 +494,7 @@ window.processee.create = function() {
 		};
 		p.__stackPop = function() {
 			var o = p.__stack.pop();
-			p.translate(-o.origin.x, -o.origin.y);
-			p.rotate(-o.rotation);
+			p.popMatrix();
 			if(p.__stack.length) {
 				p.__stackSet();
 			}

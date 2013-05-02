@@ -3,7 +3,7 @@ navigator.getUserMedia ||
 	navigator.webkitGetUserMedia || navigator.msGetUserMedia);
 
 window.processee = {
-	layers: {},
+	layers: [],
 	setups: [],
 
 	getLayer: function(l) {
@@ -48,19 +48,21 @@ window.processee = {
 		layer.objects.push(obj);
 	},
 
+	objects: function(objs) {
+		for(var i = 0; i < objs.length; i++) {
+			window.processee.object(objs[i]);
+		}
+	},
+
 	run: function() {
 		if(window.processingInstance) window.processingInstance.exit();
-		window.processee.layers = {};
+		window.processee.layers = [];
 		window.processee.setups = [];
 		$('#processing')[0].width = 0;
 
 		eval(CoffeeScript.compile(window.cm.getValue()));
 
-		window.processee.layerOrder = [];
-		for(var l in window.processee.layers) {
-			window.processee.layerOrder.push(l);
-		}
-		window.processee.layerOrder.sort();
+		window.processee.layers.sort();
 
 		if(window.processingInstance) window.processingInstance.exit();
 		window.processingInstance = new Processing($('#processing')[0],
@@ -640,16 +642,16 @@ window.processee.create = function() {
 			// Call do-once routines and setup objects.
 			var layers = window.processee.layers;
 			var layerOrder = window.processee.layerOrder;
-			for(var i = 0; i < layerOrder.length; i++) {
-				var l = layerOrder[i];
+			for(var l = 0; l < layers.length; l++) {
 				var layer = layers[l];
+				if(!layer) continue;
 				for(var j = 0; j < layer.once.length; j++) {
 					p.reset();
 					layer.once[j].call(p);
 				}
 				for(var j = 0; j < layer.objects.length; j++) {
-					p.reset();
-					if(layer.objects[j].hasOwnProperty('setup')) {
+					if('setup' in layer.objects[j]) {
+						p.reset();
 						layer.objects[j].setup.call(p);
 					}
 				}
@@ -666,18 +668,17 @@ window.processee.create = function() {
 				p.__webcamCapture();
 			}
 			// Call do-once routines and setup objects.
-			var layerOrder = window.processee.layerOrder;
-			for(var i = 0; i < layerOrder.length; i++) {
-				var l = layerOrder[i];
+			for(var l = 0; l < layers.length; l++) {
 				var layer = layers[l];
+				if(!layer) continue;
 				for(var j = 0; j < layer.everyFrame.length; j++) {
 					p.reset();
-					layer.everyFrame[j].call(p);
+					layer.everyFrame[j].call(p, layer.objects[j]);
 				}
 				for(var j = 0; j < layer.objects.length; j++) {
-					p.reset();
-					if(layer.objects[j].hasOwnProperty('draw')) {
-						layer.objects[j].draw.call(p);
+					if('draw' in layer.objects[j]) {
+						p.reset();
+						layer.objects[j].draw.call(p, layer.objects[j]);
 					}
 				}
 			}

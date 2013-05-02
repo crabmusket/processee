@@ -474,6 +474,17 @@ window.processee.create = function() {
 			return p.__stack[p.__stack.length-1].rotation;
 		});
 
+		p.__defineSetter__('zoom', function(s) {
+			var c = p.__stack[p.__stack.length-1];
+			p.scale(1 / c.scale);
+			p.__stack[p.__stack.length-1].scale = s;
+			p.scale(s);
+			p.__stackSet();
+		});
+		p.__defineGetter__('zoom', function() {
+			return p.__stack[p.__stack.length-1].scale;
+		});
+
 		p.__stack = [];
 		p.__stackSet = function() {
 			var c = p.__stack[p.__stack.length-1];
@@ -489,6 +500,7 @@ window.processee.create = function() {
 				mode: c.mode,
 				fill: c.fill,
 				stroke: c.stroke,
+				scale: c.scale,
 				origin: {x: 0, y: 0},
 				rotation: 0,
 				transparency: c.transparency,

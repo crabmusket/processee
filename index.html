@@ -119,6 +119,9 @@ processee.once ->
   @drawImage pixelated
 </div>
 <div id="ex-pixelatemask">
+# See example focalpixelate instead.
+</div>
+<div id="ex-focalpixelate">
 # Pixelate mask
 # This effect pixelates an image a variable amount. At the 'focal point'
 # there is no pixelation. Regions further from the focal point are more
@@ -126,34 +129,55 @@ processee.once ->
 # Inspired by PicMonkey's Focal Pixelate effect.
 # Daniel Buckmaster, 2013
 
-# Hold the image file name in a global variable.
-image = "landscape.jpg"
+# Define options for the landscape image.
+landscape =
+  # mage file loaded from server.
+  image: "landscape.jpg"
+  # Maximum pixelation (i.e. 10 pixels/pixel).
+  maxPixelSize: 10
+  # Falloff radius of the pixelation effect. Smaller values mean a smaller
+  # unblurred area.
+  radius: 70
+  # Location of the unblurred point (fraction of each dimension).
+  focalPoint:
+    x: 1
+    y: 0.5
 
-# Constants related to the effect. Change these to change
-# the way the effect is applied.
-radius = 90
-focalPoint = {
-  x: 750
-  y: 200
-}
-maxPixelSize = 10
+# Define options for lenna.
+lenna =
+  image: "lenna.jpg"
+  maxPixelSize: 10
+  radius: 30
+  focalPoint: {x: 0.55, y: 0.6}
+
+# Change this to try different images.
+settings = landscape
 
 # Asynchronously load the source image.
 processee.setup ->
-  @loadImage image
+  @loadImage settings.image
 
 # Main function.
 processee.once ->
+  @do pixelate
+
+# The pixelate routine.
+pixelate = ->
+  image = settings.image
   # Scale the canvas to the size of the image.
   @canvasSize = @sizeOf image
+  # Get the pixel coordinates of the focal point.
+  focusX = (@sizeOf image).width  * settings.focalPoint.x
+  focusY = (@sizeOf image).height * settings.focalPoint.y
   # This helper calls a function on every pixel in the image, and puts the
   # return values into a new image map of the same dimensions. After all
   # pixels are processed, the old image data is replaced with the new.
   @forEachPixelOf image, (pixel) ->
     # First, calculate the distance (in pixels) to the focal point.
-    dist = Math.sqrt(Math.pow(focalPoint.x - pixel.x, 2) + Math.pow(focalPoint.y - pixel.y, 2))
+    dist = Math.sqrt(Math.pow(focusX - pixel.x, 2) +
+           Math.pow(focusY - pixel.y, 2))
     # Scale it a bit and round down.
-    dist = Math.floor(dist / radius)
+    dist = Math.floor(dist / settings.radius)
     # In CoffeeScript, the result of the last statement in a function is
     # Returned. In this case we return the result of an if statement:
     if dist is 0
@@ -161,7 +185,7 @@ processee.once ->
       pixel
     else
       # Calculate the pixel size we want at this radius.
-      size = Math.min(maxPixelSize, dist)
+      size = Math.min(settings.maxPixelSize, dist)
       # Calculate the coordinates to read from by modding the coordinates
       # of the current pixel by the pixel size. This creates the pixelation
       # effect (see the '#pixelate' example).

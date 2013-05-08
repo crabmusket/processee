@@ -19,6 +19,13 @@ function toggleAbout() {
 	$('.about').fadeToggle('fast');
 }
 
+function saveSketch() {
+	var blob = new Blob([window.cm.getValue()], {
+		type: "text/plain;charset=utf-8;",
+	});
+	saveAs(blob, "sketch.coffee");
+}
+
 $(document).ready(function() {
 	window.cm = CodeMirror.fromTextArea($('#codemirror')[0], {
 		mode: 'processee',

@@ -81,12 +81,9 @@ canvas:active, canvas:focus {
 	cursor: pointer;
 }
 
-.button.run {
-	background-image: url('../images/ui-run.png');
-}
-.button.info {
-	background-image: url('../images/ui-info.png');
-}
+.run-image { background-image: url('../images/ui-run.png'); }
+.info-image { background-image: url('../images/ui-info.png'); }
+.save-image { background-image: url('../images/ui-save.png'); }
 
 .about {
 	position: absolute;

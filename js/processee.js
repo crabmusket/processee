@@ -51,27 +51,34 @@ window.processee = {
 		}
 	},
 
+	onMouseMove: function(fn) {
+		if(!window.processee.mouse['move']) {
+			window.processee.mouse['move'] = [];
+		}
+		window.processee.mouse['move'].push(fn);
+	},
+
+	onClick: function(fn) {
+		if(!window.processee.mouse['click']) {
+			window.processee.mouse['click'] = [];
+		}
+		window.processee.mouse['click'].push(fn);
+	},
+
 	run: function() {
 		if(window.processingInstance) window.processingInstance.exit();
 		window.processee.layers = [];
 		window.processee.setups = [];
+		window.processee.mouse = {};
 		$('#processing')[0].width = 0;
 
 		eval(CoffeeScript.compile(window.cm.getValue()));
 
 		window.processee.layers.sort();
 
-		if(window.processingInstance) window.processingInstance.exit();
-		window.processingInstance = new Processing($('#processing')[0],
+		window.processingInstance = new Processing(
+			$('#processing')[0],
 			window.processee.create());
-	},
-
-	mouseEvent: function(event) {
-		//
-	},
-
-	keyEvent: function(event) {
-		//
 	},
 };
 
@@ -699,6 +706,19 @@ window.processee.create = function() {
 					}
 				}
 			}
+		};
+
+		p.__mouseEvent = function(event) {
+			handlers = window.processee.mouse[event.type];
+			if(handlers) {
+				for(var i = 0; i < handlers.length; i++) {
+					handlers[i].call(p, event);
+				}
+			}
+		};
+
+		p.__keyEvent = function(event) {
+			//
 		};
 	}
 };

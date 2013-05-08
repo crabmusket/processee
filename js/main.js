@@ -64,10 +64,10 @@ $(document).ready(function() {
 	};
 
 	canvas.mousedown(function(e) {
-		window.processee.mouseEvent(pageToCanvas(e, 'click'));
+		window.processingInstance.__mouseEvent(pageToCanvas(e, 'click'));
 	});
 	canvas.mousemove(function(e) {
-		window.processee.mouseEvent(pageToCanvas(e, 'move'));
+		window.processingInstance.__mouseEvent(pageToCanvas(e, 'move'));
 	});
 
 	window.setExampleByHash();

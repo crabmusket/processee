@@ -32,3 +32,5 @@ Processing has some problems.
  * [CoffeeScript](http://coffeescript.org)
  * [Processing.js](http://processingjs.org/)
  * [CodeMirror](http://codemirror.net/)
+ * [jQuery](http://jquery.org)
+ * [PICOL](http://www.picol.org/index.php)

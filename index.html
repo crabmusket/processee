@@ -20,18 +20,21 @@
 
 <body>
 	<div class="editor">
-	<textarea id="codemirror"></textarea>
+		<textarea id="codemirror"></textarea>
 	</div>
+
 	<div class="output" id="output">
 		<div class="webcam">
 			<video id="webcam"></video>
 		</div>
 		<canvas class="output" id="processing"></canvas>
 	</div>
+
 	<div class="buttons">
-		<a class="button run" onclick="processee.run();">&rArr;</a>
-		<a class="button" onclick="toggleAbout();">?</a>
+		<a class="button run" onclick="processee.run();"></a>
+		<a class="button info" onclick="toggleAbout();"></a>
 	</div>
+
 	<div class="internals">
 		<canvas id="processee-internal-canvas"></canvas>
 		<img id="processee-image-loader"></img>

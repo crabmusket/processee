@@ -3,9 +3,6 @@ navigator.getUserMedia ||
 	navigator.webkitGetUserMedia || navigator.msGetUserMedia);
 
 window.processee = {
-	layers: [],
-	setups: [],
-
 	getLayer: function(l) {
 		var layers = window.processee.layers;
 		if(layers[l] === undefined) {

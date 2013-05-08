@@ -53,6 +53,23 @@ $(document).ready(function() {
 	$('.about').toggle();
 	$('.about a').click(hideAbout);
 
+	var canvas = $('#processing');
+	var pageToCanvas = function(e, t) {
+		var o = canvas.offset();
+		return {
+			x: e.pageX - o.left,
+			y: e.pageY - o.top,
+			type: t,
+		};
+	};
+
+	canvas.mousedown(function(e) {
+		window.processee.mouseEvent(pageToCanvas(e, 'click'));
+	});
+	canvas.mousemove(function(e) {
+		window.processee.mouseEvent(pageToCanvas(e, 'move'));
+	});
+
 	window.setExampleByHash();
 });
 

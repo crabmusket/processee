@@ -68,6 +68,14 @@ window.processee = {
 		window.processingInstance = new Processing($('#processing')[0],
 			window.processee.create());
 	},
+
+	mouseEvent: function(event) {
+		//
+	},
+
+	keyEvent: function(event) {
+		//
+	},
 };
 
 function rgb(r, g, b) {

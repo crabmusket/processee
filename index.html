@@ -366,6 +366,28 @@ processee.setup ->
 processee.everyFrame {layer:0}, ->
   @canvasBackground = gray 255
 </div>
+<div id="ex-mouse">
+processee.setup ->
+  @canvasSize = dim 300, 300
+  @canvasBackground = gray 255
+
+processee.onMouseMove (event) ->
+  @drawLine
+    to:
+      x: event.x
+      y: event.y
+    # The @mouse variable is only changed after this event, so the old mouse
+    # position is still in it.
+    from:
+      x: @mouse.x
+      y: @mouse.y
+
+processee.onClick (event) ->
+  @drawSquare
+    x: event.x
+    y: event.y
+    size: 20
+</div>
 		</div>
 	</div>
 	<div class="about">

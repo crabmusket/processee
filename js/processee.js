@@ -708,13 +708,22 @@ window.processee.create = function() {
 			}
 		};
 
+		p.mouse = {
+			x: undefined,
+			y: undefined,
+		};
+
 		p.__mouseEvent = function(event) {
+			if(p.mouse.x === undefined) p.mouse.x = event.x;
+			if(p.mouse.y === undefined) p.mouse.y = event.y;
 			handlers = window.processee.mouse[event.type];
 			if(handlers) {
 				for(var i = 0; i < handlers.length; i++) {
 					handlers[i].call(p, event);
 				}
 			}
+			p.mouse.x = event.x;
+			p.mouse.y = event.y;
 		};
 
 		p.__keyEvent = function(event) {

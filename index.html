@@ -91,6 +91,23 @@ processee.once ->
   @drawImage image
 </div>
 
+<div class="example" id="ex-overlay">
+# Overlay
+# Draw transparent images.
+
+image = "monalisa.jpg"
+logo = "images/ui-save.png"
+
+processee.setup ->
+  @loadImage image
+  @loadImage logo
+
+processee.once ->
+  @canvasSize = @sizeOf image
+  @drawImage image
+  @at {x:113, y:80}, -> @drawImage logo
+</div>
+
 <div class="example" id="ex-animate">
 # Animate
 # Demonstrates frame-by-frame animation.
@@ -400,20 +417,6 @@ processee.onClick (event) ->
     x: event.x
     y: event.y
     size: 20
-</div>
-
-<div id="ex-overlay">
-image = "usyd.jpg"
-logo = "usyd-logo.png"
-
-processee.setup ->
-  @loadImage image
-  @loadImage logo
-
-processee.once ->
-  @canvasSize = @sizeOf image
-  @drawImage image
-  @drawImage logo
 </div>
 		</div>
 	</div>

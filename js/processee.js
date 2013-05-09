@@ -248,7 +248,11 @@ window.processee.create = function() {
 					y = x.y || x.yPos;
 					x = x.x || x.xPos;
 				}
-				$('#processing')[0].getContext('2d').putImageData(file, x, y);
+				var tempCanvas = $('#processee-internal-canvas')[0];
+				tempCanvas.width = file.width;
+				tempCanvas.height = file.height;
+				tempCanvas.getContext('2d').putImageData(file, 0, 0);
+				$('#processing')[0].getContext('2d').drawImage(tempCanvas, x, y);
 			} else {
 				console.log('Image file "' + file + '" has not been loaded.');
 			}

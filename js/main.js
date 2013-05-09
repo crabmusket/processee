@@ -10,13 +10,13 @@ window.setExampleByHash = function() {
 window.addEventListener("hashchange", window.setExampleByHash, false);
 
 function hideAbout() {
-	$('.about').fadeOut('fast');
+	$('.about').toggle(false);
 };
 function showAbout() {
-	$('.about').fadeIn('fast');
+	$('.about').toggle(true);
 };
 function toggleAbout() {
-	$('.about').fadeToggle('fast');
+	$('.about').toggle();
 }
 
 function saveSketch() {
@@ -57,9 +57,6 @@ $(document).ready(function() {
 	$(window).resize(resize);
 	resize();
 
-	$('.about').toggle();
-	$('.about a').click(hideAbout);
-
 	var canvas = $('#processing');
 	var pageToCanvas = function(e, t) {
 		var o = canvas.offset();
@@ -71,11 +68,26 @@ $(document).ready(function() {
 	};
 
 	canvas.mousedown(function(e) {
-		window.processingInstance.__mouseEvent(pageToCanvas(e, 'click'));
+		if(window.processingInstance)
+			window.processingInstance.__mouseEvent(pageToCanvas(e, 'click'));
 	});
 	canvas.mousemove(function(e) {
-		window.processingInstance.__mouseEvent(pageToCanvas(e, 'move'));
+		if(window.processingInstance)
+			window.processingInstance.__mouseEvent(pageToCanvas(e, 'move'));
 	});
+
+	$('div.example').each(function(i, e) {
+		e = $(e);
+		var contents = e.html().split('\n');
+		var title = contents[1].substr(2);
+		var desc = contents[2].substr(2);
+		$('.about ul').append('<li><a href="#' + e.attr('id').substr(3) + '">' +
+			title + '</a> ' +
+			desc + '</li>')
+	});
+
+	$('.about').toggle();
+	$('.about a').click(hideAbout);
 
 	window.setExampleByHash();
 });

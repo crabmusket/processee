@@ -71,10 +71,12 @@ $(document).ready(function() {
 	};
 
 	canvas.mousedown(function(e) {
-		window.processingInstance.__mouseEvent(pageToCanvas(e, 'click'));
+		if(window.processingInstance)
+			window.processingInstance.__mouseEvent(pageToCanvas(e, 'click'));
 	});
 	canvas.mousemove(function(e) {
-		window.processingInstance.__mouseEvent(pageToCanvas(e, 'move'));
+		if(window.processingInstance)
+			window.processingInstance.__mouseEvent(pageToCanvas(e, 'move'));
 	});
 
 	$('div.example').each(function(i, e) {

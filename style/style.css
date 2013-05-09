@@ -74,9 +74,9 @@ canvas:active, canvas:focus {
 	cursor: pointer;
 }
 
-.run-image { background-image: url('../images/ui-run.png'); }
-.info-image { background-image: url('../images/ui-info.png'); }
-.save-image { background-image: url('../images/ui-save.png'); }
+.run-image { background-image: url('../ui/run.png'); }
+.info-image { background-image: url('../ui/info.png'); }
+.save-image { background-image: url('../ui/save.png'); }
 
 .about {
 	position: absolute;

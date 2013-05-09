@@ -13,7 +13,7 @@ Processee aims to fix, or at least alleviate, some of the major ones:
 
  * **Dependence on invisible global state** makes understanding and sharing code difficult.
    Processee lets you draw in blocks with their own state that does not 'leak' out.
-   This takes care of the canonical-state boilerplate code and enables painless _recomposition_.
+   This means you can stop pushing and popping matrices, and enables painless _recomposition_.
    
  * **Hard-to-read syntax** makes Processing difficult to learn without constantly diving into the reference manual.
    Processee provides functions that take configuration objects with named parameters for clarity.

@@ -41,35 +41,60 @@
 		<canvas id="processee-internal-canvas"></canvas>
 		<img id="processee-image-loader"></img>
 		<div class="examples">
-<div id="ex-edge">
-im = "monalisa.jpg"
+
+<div class="example" id="ex-flower">
+# Flower
+# Draw a pretty flower.
 
 processee.setup ->
-  @loadImage im
+  @canvasSize = dim 300, 300
+  @canvasBackground = gray 255
 
 processee.once ->
-  @canvasSize = @sizeOf im
-  @forEachPixelOf im, edge
-  @drawImage im
+  @at {x: 150, y: 250}, stalk
+  @at {x: 150, y: 100}, petals
+  @at {x: 175, y: 210}, leaf
+  @at {x: 125, y: 230}, leaf
 
-edge = (pixel) ->
-  img = pixel.file
-  left = @getImagePixel img, pixel.x - 1, pixel.y
-  right = @getImagePixel img, pixel.x + 1, pixel.y
-  dx = if left and right then pixelDiff left, right else 0
-  up = @getImagePixel img, pixel.x, pixel.y - 1
-  down = @getImagePixel img, pixel.x, pixel.y + 1
-  dy = if up and down then pixelDiff up, down else 0
-  avg = dx + dy / 2
-  if avg > 40
-    gray 255
-  else
-    gray 0
+stalk = ->
+  @fillColor = rgb 0, 255, 0
+  @strokeColor = rgb 0, 255, 0
+  @drawRect {width: 10, height: 200}
 
-pixelDiff = (p1, p2) ->
-  Math.abs (p1.red - p2.red + p1.green - p2.green + p1.blue - p2.blue) / 3
+leaf = ->
+  @fillColor = rgb 0, 255, 0
+  @strokeColor = rgb 0, 255, 0
+  @drawEllipse {width: 40, height: 20}
+
+petals = ->
+  @transparency = 0.2
+  for angle in [0, Math.PI/3, Math.PI/6]
+    @rotatedBy angle, petal
+
+petal = ->
+  @fillColor = rgb 255, 0, 0
+  @strokeColor = rgb 255, 0, 0
+  @drawSquare {size: 100}
 </div>
-<div id="ex-animate">
+
+<div class="example" id="ex-image">
+# Image
+# Load and display an image.
+
+image = "monalisa.jpg"
+
+processee.setup ->
+  @loadImage image
+
+processee.once ->
+  @canvasSize = @sizeOf image
+  @drawImage image
+</div>
+
+<div class="example" id="ex-animate">
+# Animate
+# Demonstrates frame-by-frame animation.
+
 processee.setup ->
   @canvasSize = dim 300, 300
   @canvasBackground = gray 255
@@ -92,20 +117,11 @@ processee.everyFrame ->
   dx = if x < 0 or x > 300 then -dx else dx
   dy = if y < 0 or y > 300 then -dy else dy
 </div>
-<div id="ex-overlay">
-image = "usyd.jpg"
-logo = "usyd-logo.png"
 
-processee.setup ->
-  @loadImage image
-  @loadImage logo
+<div class="example" id="ex-pixelate">
+# Pixelate
+# Simple pixelation effect.
 
-processee.once ->
-  @canvasSize = @sizeOf image
-  @drawImage image
-  @drawImage logo
-</div>
-<div id="ex-pixelate">
 image = "landscape.jpg"
 pixelated = "pixelated"
 
@@ -123,11 +139,14 @@ processee.once ->
     return @getImagePixel pixelated, pixel
   @drawImage pixelated
 </div>
+
 <div id="ex-pixelatemask">
 # See example focalpixelate instead.
 </div>
-<div id="ex-focalpixelate">
+
+<div class="example" id="ex-focalpixelate">
 # Focal pixelate
+# Assignment code for COMP3419.
 # This effect pixelates an image a variable amount. At the 'focal point'
 # there is no pixelation. Regions further from the focal point are more
 # and more pixelated. The pixels get bigger the further you go.
@@ -201,7 +220,10 @@ pixelate = ->
   # Finally, draw the transformed image.
   @drawImage image
 </div>
+
 <div id="ex-webcam">
+# Webcam
+# Stare at your own face in your browser!
 processee.setup ->
   @webcam = on
 
@@ -211,7 +233,11 @@ processee.once ->
 processee.everyFrame ->
   @drawImage "webcam"
 </div>
-<div id="ex-photobooth">
+
+<div class="example" id="ex-photobooth">
+# Photobooth
+# Capturing still images from the webcam.
+
 processee.setup ->
   @webcam = on
 
@@ -220,48 +246,11 @@ processee.once ->
   @canvasSize = @sizeOf "webcam"
   @drawImage "webcam"
 </div>
-<div id="ex-image">
-image = "monalisa.jpg"
 
-processee.setup ->
-  @loadImage image
+<div class="example" id="ex-threshold">
+# Threshold
+# A threshold filter.
 
-processee.once ->
-  @canvasSize = @sizeOf image
-  @drawImage image
-</div>
-<div id="ex-flower">
-processee.setup ->
-  @canvasSize = dim 300, 300
-  @canvasBackground = gray 255
-
-processee.once ->
-  @at {x: 150, y: 250}, stalk
-  @at {x: 150, y: 100}, petals
-  @at {x: 175, y: 210}, leaf
-  @at {x: 125, y: 230}, leaf
-
-stalk = ->
-  @fillColor = rgb 0, 255, 0
-  @strokeColor = rgb 0, 255, 0
-  @drawRect {width: 10, height: 200}
-
-leaf = ->
-  @fillColor = rgb 0, 255, 0
-  @strokeColor = rgb 0, 255, 0
-  @drawEllipse {width: 40, height: 20}
-
-petals = ->
-  @transparency = 0.2
-  for angle in [0, Math.PI/3, Math.PI/6]
-    @rotatedBy angle, petal
-
-petal = ->
-  @fillColor = rgb 255, 0, 0
-  @strokeColor = rgb 255, 0, 0
-  @drawSquare {size: 100}
-</div>
-<div id="ex-threshold">
 image = "lenna.jpg"
 
 processee.setup ->
@@ -278,7 +267,11 @@ threshold = (pixel) ->
   else
     gray 0
 </div>
-<div id="ex-pixels">
+
+<div class="example" id="ex-pixels">
+# Pixels
+# Create your own image with pixel data.
+
 processee.once ->
   @makeNewImage "img", { width: 255, height: 255 }
   @canvasSize = @sizeOf "img"
@@ -288,7 +281,11 @@ processee.once ->
 chooseColor = (pixel) ->
   gray ((pixel.x + pixel.y) % 255)
 </div>
-<div id="ex-blur">
+
+<div class="example" id="ex-blur">
+# Blur
+# A simple image blur algorithm.
+
 image = "lenna.jpg"
 
 processee.setup ->
@@ -306,7 +303,11 @@ processee.once ->
   }
   @drawImage image
 </div>
-<div id="ex-sharpen">
+
+<div class="example" id="ex-sharpen">
+# Sharpen
+# Uses the unsharp mask algorithm.
+
 image = "lenna.jpg"
 
 processee.setup ->
@@ -321,7 +322,11 @@ processee.once ->
   ]
   @drawImage image
 </div>
-<div id="ex-median">
+
+<div class="example" id="ex-median">
+# Median
+# An example of a median blur filter.
+
 image = "monalisa.jpg"
 
 processee.setup ->
@@ -344,7 +349,11 @@ median = (pixel) ->
   blues = sort blues
   rgb reds[4], greens[4], blues[4]
 </div>
-<div id="ex-objects">
+
+<div class="example" id="ex-objects">
+# Objects
+# Add objects to your scene.
+
 class Square
   constructor: (@pos, @vel) ->
   draw: (self) ->
@@ -366,7 +375,11 @@ processee.setup ->
 processee.everyFrame {layer:0}, ->
   @canvasBackground = gray 255
 </div>
-<div id="ex-mouse">
+
+<div class="example" id="ex-mouse">
+# Mouse
+# Demonstrates mouse movement and click capturing.
+
 processee.setup ->
   @canvasSize = dim 300, 300
   @canvasBackground = gray 255
@@ -388,22 +401,35 @@ processee.onClick (event) ->
     y: event.y
     size: 20
 </div>
+
+<div id="ex-overlay">
+image = "usyd.jpg"
+logo = "usyd-logo.png"
+
+processee.setup ->
+  @loadImage image
+  @loadImage logo
+
+processee.once ->
+  @canvasSize = @sizeOf image
+  @drawImage image
+  @drawImage logo
+</div>
 		</div>
 	</div>
 	<div class="about">
 		<div class="dialog">
 			<h2>Demos</h2>
 			<ul>
-				<li><a href="#flower">Draw a simple flower. Inspired by Bret Victor</a></li>
-				<li><a href="#image">Load and display an image file</a></li>
-				<li><a href="#pixels">Create your own pixel array to work with</a></li>
-				<li><a href="#threshold">A threshold filter</a></li>
-				<li><a href="#sharpen">A sharpening filter using unsharp mask</a></li>
-				<li><a href="#blur">A simple blur filter</a></li>
-				<li><a href="#median">A median filter</a></li>
 			</ul>
-			<h2>Code</h2>
-			<p><a href="http://github.com/eightyeight/processee">GitHub</a></p>
+			<p>
+				Code available on
+				<a href="http://github.com/eightyeight/processee">GitHub</a>
+			</p>
+			<p>
+				Interface buttons from
+				<a href="http://www.picol.org/index.php">PICOL</a>
+			</p>
 		</div>
 	</div>
 </body>

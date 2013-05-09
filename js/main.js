@@ -77,6 +77,16 @@ $(document).ready(function() {
 		window.processingInstance.__mouseEvent(pageToCanvas(e, 'move'));
 	});
 
+	$('div.example').each(function(i, e) {
+		e = $(e);
+		var contents = e.html().split('\n');
+		var title = contents[1].substr(2);
+		var desc = contents[2].substr(2);
+		$('.about ul').append('<li><a href="#' + e.attr('id') + '">' +
+			title + '</a> ' +
+			desc + '</li>')
+	});
+
 	window.setExampleByHash();
 });
 

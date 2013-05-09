@@ -72,7 +72,8 @@ window.processee = {
 		window.processee.mouse = {};
 		$('#processing')[0].width = 0;
 
-		eval(CoffeeScript.compile(window.cm.getValue()));
+		var code = CoffeeScript.compile(window.cm.getValue());
+		eval(code);
 
 		window.processee.layers.sort();
 

@@ -149,15 +149,15 @@ window.processee.create = function() {
 			p.background(c.red, c.green, c.blue, c.alpha);
 		});
 
-		p.drawLine = function(x1, y1, x2, y2) {
-			if(typeof x1 == 'object') {
-				p.line(x1.from.x,
-				       x1.from.y,
-				       x1.to.x,
-				       x1.to.y);
-			} else {
-				p.line(x1, y1, x2, y2);
-			}
+		p.drawLine = function(line) {
+			var a = line.a || line.from || line.first;
+			var b = line.b || line.to || line.second;
+			if(!a || !b)
+				return;
+			p.line(a.x || 0,
+			       a.y || 0,
+			       b.x || 10,
+			       b.y || 10);
 		};
 
 		p.drawLinesBetween = function(points) {
@@ -168,65 +168,56 @@ window.processee.create = function() {
 			for(var i = 1; i < points.length; i++) {
 				var p0 = points[i-1];
 				var p1 = points[i];
-				p.line(p0.x, p0.y, p1.x, p1.y);
+				p.drawLine({from: p0, to: p1});
 			}
 		};
 
-		p.drawTriangle = function(x1, y1, x2, y2, x3, y3) {
-			if(typeof x1 == 'object') {
-				p.triangle(x1.a.x || x1.a.posX || 0,
-				           x1.a.y || x1.a.posY || 0,
-				           x1.b.x || x1.b.posX || 0,
-				           x1.b.y || x1.b.posY || 0,
-				           x1.c.x || x1.c.posX || 0,
-				           x1.c.y || x1.c.posY || 0);
-			} else {
-				p.triangle(x1, y1, x2, y2, x3, y3);
+		p.drawListOfLines = function(lines) {
+			for(var i = 0; i < lines.length; i++) {
+				p.drawLine(lines[i]);
 			}
 		};
 
-		p.drawRect = function(x, y, w, h) {
-			if(typeof x == 'object') {
-				p.rect(x.x || x.posX || 0,
-				       x.y || x.posY || 0,
-				       x.w || x.width,
-				       x.h || x.height);
-			} else {
-				p.rect(x, y, w, h);
-			}
+		p.drawTriangle = function(tri) {
+			var a = tri.a || tri.first;
+			var b = tri.b || tri.second;
+			var c = tri.c || tri.third;
+			if(!a || !b || !c)
+				return;
+			p.triangle(a.x || 0,
+			           a.y || 0,
+			           b.x || 0,
+			           b.y || 10,
+			           c.x || 10,
+			           c.y || 10);
 		};
 
-		p.drawSquare = function(x, y, s) {
-			if(typeof x == 'object') {
-				p.rect(x.x || x.posX || 0,
-				       x.y || x.posY || 0,
-				       x.s || x.size || 0,
-				       x.s || x.size || 0);
-			} else {
-				p.rect(x, y, s, s);
-			}
+		p.drawRect = function(rect) {
+			p.rect(rect.x || 0,
+			       rect.y || 0,
+			       rect.w || rect.width || 10,
+			       rect.h || rect.height || 10);
 		};
 
-		p.drawEllipse = function(x, y, w, h) {
-			if(typeof x == 'object') {
-				p.ellipse(x.x || x.posX,
-				          x.y || x.posY || 0,
-				          x.w || x.width || 0,
-				          x.h || x.height);
-			} else {
-				p.ellipse(x, y, w, h);
-			}
+		p.drawSquare = function(sq) {
+			p.rect(sq.x || sq.posX || 0,
+			       sq.y || sq.posY || 0,
+			       sq.s || sq.size || 10,
+			       sq.s || sq.size || 10);
 		};
 
-		p.drawCircle = function(x, y, r) {
-			if(typeof x == 'object') {
-				p.ellipse(x.x || x.posX || 0,
-				          x.y || x.posY || 0,
-				          x.r || x.radius,
-				          x.r || x.radius);
-			} else {
-				p.ellipse(x, y, r, r);
-			}
+		p.drawEllipse = function(ell) {
+			p.ellipse(ell.x || 0,
+			          ell.y || 0,
+			          ell.w || ell.width || 10,
+			          ell.h || ell.height || 10);
+		};
+
+		p.drawCircle = function(circ) {
+			p.ellipse(circ.x || 0,
+			          circ.y || 0,
+			          circ.r || circ.radius,
+			          circ.r || circ.radius);
 		};
 
 		p.__getImage = function(i) {
@@ -237,22 +228,14 @@ window.processee.create = function() {
 			}
 		};
 
-		p.drawImage = function(file, x, y) {
+		p.drawImage = function(file) {
 			file = p.__getImage(file);
 			if(file !== undefined) {
-				if(x === undefined) {
-					x = 0;
-					y = 0;
-				}
-				if(typeof x == 'object') {
-					y = x.y || x.yPos;
-					x = x.x || x.xPos;
-				}
 				var tempCanvas = $('#processee-internal-canvas')[0];
 				tempCanvas.width = file.width;
 				tempCanvas.height = file.height;
 				tempCanvas.getContext('2d').putImageData(file, 0, 0);
-				$('#processing')[0].getContext('2d').drawImage(tempCanvas, x, y);
+				$('#processing')[0].getContext('2d').drawImage(tempCanvas, 0, 0);
 			} else {
 				console.log('Image file "' + file + '" has not been loaded.');
 			}

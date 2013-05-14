@@ -268,33 +268,23 @@ window.processee.create = function() {
 			}
 		};
 
-		p.makeNewImage = function(name, w, h) {
+		p.makeNewImage = function(cfg) {
 			var nimg = undefined;
-			var copyFrom = undefined;
-			var dimensions = undefined;
-			if(typeof name == 'object') {
-				copyFrom = name.copyFrom;
-				dimensions = {
-					w: name.w || name.width || name.size.w || name.size.width,
-					h: name.h || name.height || name.size.h || name.size.height
-				};
-				name = name.name;
-			} else if(typeof w == 'string' || w.toString == '[object ImageData]') {
-				copyFrom = w;
-			} else {
-				dimensions = w;
-			}
-			if(copyFrom) {
-				var img = p.__getImage(copyFrom);
+			var name = cfg.name;
+			var source = cfg.copy || cfg.data;
+			var width = cfg.w || cfg.width;
+			var height = cfg.h || cfg.height;
+			if(source) {
+				var img = p.__getImage(source);
 				if(img !== undefined) {
 					nimg = $('#processee-internal-canvas')[0].getContext('2d').createImageData(img.width, img.height);
 					nimg.data.set(img.data);
 				} else {
 					console.log('Image file "' + copyFrom + '" has not been loaded.');
 				}
-			} else if(dimensions) {
+			} else if(width !== undefined && height !== undefined) {
 				nimg = $('#processee-internal-canvas')[0].getContext('2d')
-					.createImageData(dimensions.w || dimensions.width, dimensions.h || dimensions.height);
+					.createImageData(width, height);
 			}
 			if(name !== undefined) {
 				p.__imageData[name] = nimg;
@@ -346,9 +336,12 @@ window.processee.create = function() {
 			}
 		};
 
-		p.forEachPixelOf = function(file, fn) {
+		p.forEachPixelOf = function(cfg) {
+			var file = cfg.image || cfg.img;
 			var stored = typeof file == "string";
 			var img = p.__getImage(file);
+			var fn = cfg.do;
+			if(cfg.modify === undefined) cfg.modify = true;
 			if(img !== undefined) {
 				var tempData = $('#processee-internal-canvas')[0].getContext('2d').createImageData(img.width, img.height);
 				var x = 0, y = 0;
@@ -365,7 +358,7 @@ window.processee.create = function() {
 						y++;
 					}
 				}
-				if(stored) {
+				if(stored && cfg.modify) {
 					p.__imageData[file] = tempData;
 				}
 				return tempData;

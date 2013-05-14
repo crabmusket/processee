@@ -154,11 +154,15 @@ processee.setup ->
 
 processee.once ->
   @canvasSize = @sizeOf image
-  @makeNewImage pixelated, image
-  @forEachPixelOf pixelated, (pixel) ->
-    pixel.x = pixel.x - (pixel.x % pixelSize)
-    pixel.y = pixel.y - (pixel.y % pixelSize)
-    return @getImagePixel pixelated, pixel
+  @makeNewImage
+    name: pixelated
+    copy: image
+  @forEachPixelOf
+    image: pixelated
+    do: (pixel) ->
+      pixel.x = pixel.x - (pixel.x % pixelSize)
+      pixel.y = pixel.y - (pixel.y % pixelSize)
+      return @getImagePixel pixelated, pixel
   @drawImage pixelated
 </div>
 
@@ -177,7 +181,7 @@ processee.once ->
 
 # Define options for the landscape image.
 landscape =
-  # mage file loaded from server.
+  # Image file loaded from server.
   image: "landscape.jpg"
   # Maximum pixelation (i.e. 10 pixels/pixel).
   maxPixelSize: 10
@@ -296,9 +300,12 @@ threshold = (pixel) ->
 # Create your own image with pixel data.
 
 processee.once ->
-  @makeNewImage "img", { width: 255, height: 255 }
+  @makeNewImage
+    name: "img"
+    width: 255
+    height: 255
   @canvasSize = @sizeOf "img"
-  @forEachPixelOf "img", chooseColor
+  @forEachPixelOf {image: "img", do: chooseColor}
   @drawImage "img"
 
 chooseColor = (pixel) ->

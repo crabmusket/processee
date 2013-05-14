@@ -72,14 +72,28 @@ window.processee = {
 		window.processee.mouse = {};
 		$('#processing')[0].width = 0;
 
-		var code = CoffeeScript.compile(window.cm.getValue());
-		eval(code);
+		var code = "";
+		try { code = CoffeeScript.compile(window.cm.getValue()); }
+		catch(err) { window.processee.handleCompileError(err); }
+
+		try { eval(code); }
+		catch(err) { window.processee.handleRuntimeError(err); }
 
 		window.processee.layers.sort();
 
 		window.processingInstance = new Processing(
 			$('#processing')[0],
 			window.processee.create());
+	},
+
+	handleCompileError: function(e) {
+		alert('Syntax error on line ' + (e.location.first_line + 1));
+	},
+
+	handleRuntimeError: function(e) {
+		if(!confirm('Error: ' + e.toString())) {
+			window.processingInstance.exit();
+		}
 	},
 };
 
@@ -614,7 +628,8 @@ window.processee.create = function() {
 			// Call every setup function.
 			var setups = window.processee.setups;
 			for(var i = 0; i < setups.length; i++) {
-				setups[i].call(p);
+				try { setups[i].call(p); }
+				catch(err) { window.processee.handleRuntimeError(err); }
 			}
 
 			// Try to get the webcam if we need it, and after that's done load the images.
@@ -659,12 +674,14 @@ window.processee.create = function() {
 				if(!layer) continue;
 				for(var j = 0; j < layer.once.length; j++) {
 					p.reset();
-					layer.once[j].call(p);
+					try { layer.once[j].call(p); }
+					catch(err) { window.processee.handleRuntimeError(err); }
 				}
 				for(var j = 0; j < layer.objects.length; j++) {
 					if('setup' in layer.objects[j]) {
 						p.reset();
-						layer.objects[j].setup.call(p);
+						try { layer.objects[j].setup.call(p); }
+						catch(err) { window.processee.handleRuntimeError(err); }
 					}
 				}
 			}
@@ -685,12 +702,14 @@ window.processee.create = function() {
 				if(!layer) continue;
 				for(var j = 0; j < layer.everyFrame.length; j++) {
 					p.reset();
-					layer.everyFrame[j].call(p, layer.objects[j]);
+					try { layer.everyFrame[j].call(p, layer.objects[j]); }
+					catch(err) { window.processee.handleRuntimeError(err); }
 				}
 				for(var j = 0; j < layer.objects.length; j++) {
 					if('draw' in layer.objects[j]) {
 						p.reset();
-						layer.objects[j].draw.call(p, layer.objects[j]);
+						try { layer.objects[j].draw.call(p, layer.objects[j]); }
+						catch(err) { window.processee.handleRuntimeError(err); }
 					}
 				}
 			}
@@ -707,7 +726,8 @@ window.processee.create = function() {
 			handlers = window.processee.mouse[event.type];
 			if(handlers) {
 				for(var i = 0; i < handlers.length; i++) {
-					handlers[i].call(p, event);
+					try { handlers[i].call(p, event); }
+					catch(err) { window.processee.handleRuntimeError(err); }
 				}
 			}
 			p.mouse.x = event.x;

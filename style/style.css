@@ -90,7 +90,7 @@ canvas:active, canvas:focus {
 
 .output-buttons {
 	position: relative;
-	top: -1.5em;
+	left: -1.5em;
 }
 
 .output-buttons .button {
@@ -99,16 +99,7 @@ canvas:active, canvas:focus {
 }
 
 .output-buttons .button:hover {
-	background-color: lightGray;
-}
-
-.output-buttons p {
-	display: inline;
-	line-height: 20px;
-	position: relative;
-	top: -3px;
-	color: gray;
-	font-family: sans-serif;
+	background-color: #AAAAAA;
 }
 
 .run-image { background-image: url('../ui/run.png'); }

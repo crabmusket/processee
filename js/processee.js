@@ -338,7 +338,7 @@ window.processee.create = function() {
 			var stored = typeof file == "string";
 			var img = p.__getImage(file);
 			var fn = cfg.do;
-			if(cfg.modify === undefined) cfg.modify = true;
+			if(cfg.inPlace === undefined) cfg.inPlace = true;
 			if(img !== undefined) {
 				var tempData = $('#processee-internal-canvas')[0].getContext('2d').createImageData(img.width, img.height);
 				var x = 0, y = 0;
@@ -355,7 +355,7 @@ window.processee.create = function() {
 						y++;
 					}
 				}
-				if(stored && cfg.modify) {
+				if(stored && cfg.inPlace) {
 					p.__imageData[file] = tempData;
 				}
 				return tempData;

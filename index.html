@@ -278,21 +278,19 @@ processee.once ->
 # Threshold
 # A threshold filter.
 
-image = "lenna.jpg"
+file = "lenna.jpg"
 
 processee.setup ->
-  @loadImage image
+  @loadImage file
 
 processee.once ->
-  @canvasSize = @sizeOf image
-  @forEachPixelOf image, threshold
-  @drawImage image
+  @canvasSize = @sizeOf file
+  @forEachPixelOf
+    image: file
+    do: threshold
+  @drawImage file
 
-threshold = (pixel) ->
-  if pixel.red + pixel.green + pixel.blue > 384
-    gray 255
-  else
-    gray 0
+threshold = (pixel) -> gray (pixel.red + pixel.green + pixel.blue > 384) * 255
 </div>
 
 <div class="example" id="ex-pixels">
@@ -316,56 +314,59 @@ chooseColor = (pixel) ->
 # Blur
 # A simple image blur algorithm.
 
-image = "lenna.jpg"
+file = "lenna.jpg"
 
 processee.setup ->
-  @loadImage image
+  @loadImage file
 
 processee.once ->
-  @canvasSize = @sizeOf image
-  @forEachPixelOf image, @convolveWith {
-    matrix: [
-      1, 1, 1,
-      1, 1, 1,
-      1, 1, 1,
-    ]
-    scale: 1/9
-  }
-  @drawImage image
+  @canvasSize = @sizeOf file
+  @forEachPixelOf
+    image: file
+    do: @convolveWith
+      matrix: [
+        1, 1, 1,
+        1, 1, 1,
+        1, 1, 1,
+      ]
+      scale: 1/9
+  @drawImage file
 </div>
 
 <div class="example" id="ex-sharpen">
 # Sharpen
 # Uses the unsharp mask algorithm.
 
-image = "lenna.jpg"
+file = "lenna.jpg"
 
 processee.setup ->
-  @loadImage image
+  @loadImage file
 
 processee.once ->
-  @canvasSize = @sizeOf image
-  @forEachPixelOf image, @convolveWith [
-     0, -1,  0,
-    -1,  5, -1,
-     0, -1,  0,
-  ]
-  @drawImage image
+  @canvasSize = @sizeOf file
+  @forEachPixelOf
+    image: file
+    do: @convolveWith [
+       0, -1,  0,
+      -1,  5, -1,
+       0, -1,  0,
+    ]
+  @drawImage file
 </div>
 
 <div class="example" id="ex-median">
 # Median
 # An example of a median blur filter.
 
-image = "monalisa.jpg"
+file = "monalisa.jpg"
 
 processee.setup ->
-  @loadImage image
+  @loadImage file
 
 processee.once ->
-  @canvasSize = @sizeOf image
-  @forEachPixelOf image, median
-  @drawImage image
+  @canvasSize = @sizeOf file
+  @forEachPixelOf {image: file, do: median}
+  @drawImage file
 
 median = (pixel) ->
   reds = []

@@ -56,20 +56,20 @@ processee.setup ->
   @canvasBackground = gray 255
 
 processee.once ->
-  @at {x: 150, y: 250}, stalk
-  @at {x: 150, y: 100}, petals
-  @at {x: 175, y: 210}, leaf
-  @at {x: 125, y: 230}, leaf
+  @at x: 150, y: 250, stalk
+  @at x: 150, y: 100, petals
+  @at x: 175, y: 210, leaf
+  @at x: 125, y: 230, leaf
 
 stalk = ->
   @fillColor = rgb 0, 255, 0
   @strokeColor = rgb 0, 255, 0
-  @drawRect {width: 10, height: 200}
+  @drawRect width: 10, height: 200
 
 leaf = ->
   @fillColor = rgb 0, 255, 0
   @strokeColor = rgb 0, 255, 0
-  @drawEllipse {width: 40, height: 20}
+  @drawEllipse width: 40, height: 20
 
 petals = ->
   @transparency = 0.2
@@ -79,7 +79,7 @@ petals = ->
 petal = ->
   @fillColor = rgb 255, 0, 0
   @strokeColor = rgb 255, 0, 0
-  @drawSquare {size: 100}
+  @drawSquare size: 100
 </div>
 
 <div class="example" id="ex-image">
@@ -110,7 +110,7 @@ processee.setup ->
 processee.once ->
   @canvasSize = @sizeOf image
   @drawImage image
-  @at {x:113, y:80}, -> @drawImage logo
+  @at x:113, y:80, -> @drawImage logo
 </div>
 
 <div class="example" id="ex-animate">
@@ -129,11 +129,10 @@ dy = 0.9
 processee.everyFrame ->
   # Uncomment this to disable the trail:
   #@canvasBackground = gray 255
-  @drawSquare {
+  @drawSquare
     x: x
     y: y
     size: 20
-  }
   x = x + dx
   y = y + dy
   dx = if x < 0 or x > 300 then -dx else dx
@@ -303,7 +302,7 @@ processee.once ->
     width: 255
     height: 255
   @canvasSize = @sizeOf "img"
-  @forEachPixelOf {image: "img", do: chooseColor}
+  @forEachPixelOf image: "img", do: chooseColor
   @drawImage "img"
 
 chooseColor = (pixel) ->
@@ -365,7 +364,7 @@ processee.setup ->
 
 processee.once ->
   @canvasSize = @sizeOf file
-  @forEachPixelOf {image: file, do: median}
+  @forEachPixelOf image: file, do: median
   @drawImage file
 
 median = (pixel) ->
@@ -403,7 +402,7 @@ processee.objects [s, p]
 processee.setup ->
   @canvasSize = dim 300, 300
 
-processee.everyFrame {layer:0}, ->
+processee.everyFrame ->
   @canvasBackground = gray 255
 </div>
 

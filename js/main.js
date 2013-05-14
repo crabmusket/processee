@@ -26,6 +26,12 @@ function saveSketch() {
 	saveAs(blob, "sketch.coffee");
 }
 
+function saveOutput() {
+	$('#processing')[0].toBlob(function(blob) {
+		saveAs(blob, "sketch.png");
+	});
+}
+
 $(document).ready(function() {
 	window.cm = CodeMirror.fromTextArea($('#codemirror')[0], {
 		mode: 'processee',
@@ -37,15 +43,15 @@ $(document).ready(function() {
 		},
 	});
 
-	$('.webcam').toggle(false);
+	var canvas = $('#processing');
 
 	window.positionOutput = function() {
 		var output = $('#output');
 		$('#output').css({
-			left: $(window).width() * 2/3 - $('#processing').width()/2,
-			top: ($(window).height()/3 > $('#processing').height()/2)
-				? $(window).height() * 1/3 - $('#processing').height()/2
-				: $(window).height() * 1/2 - $('#processing').height()/2,
+			left: $(window).width() * 2/3 - canvas.width()/2,
+			top: ($(window).height()/3 > canvas.height()/2)
+				? $(window).height() * 1/3 - canvas.height()/2
+				: $(window).height() * 1/2 - canvas.height()/2,
 		});
 	};
 
@@ -57,7 +63,6 @@ $(document).ready(function() {
 	$(window).resize(resize);
 	resize();
 
-	var canvas = $('#processing');
 	var pageToCanvas = function(e, t) {
 		var o = canvas.offset();
 		return {
@@ -88,6 +93,8 @@ $(document).ready(function() {
 
 	$('.about').toggle();
 	$('.about a').click(hideAbout);
+
+	$('.webcam').toggle(false);
 
 	window.setExampleByHash();
 });

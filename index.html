@@ -14,6 +14,8 @@
 	<script type="text/javascript" src="./lib/codemirror.js"></script>
 	<script type="text/javascript" src="./lib/mode-processee.js"></script>
 	<script type="text/javascript" src="./lib/FileSaver.min.js"></script>
+	<script type="text/javascript" src="./lib/BlobBuilder.min.js"></script>
+	<script type="text/javascript" src="./lib/canvas-toBlob.min.js"></script>
 
 	<script type="text/javascript" src="./js/main.js"></script>
 	<script type="text/javascript" src="./js/processee.js"></script>
@@ -29,6 +31,9 @@
 			<video id="webcam"></video>
 		</div>
 		<canvas class="output" id="processing"></canvas>
+		<div class="output-buttons">
+			<a class="button small save-image" onclick="saveOutput();"></a>
+		</div>
 	</div>
 
 	<div class="buttons">
@@ -139,7 +144,7 @@ processee.everyFrame ->
 # Pixelate
 # Simple pixelation effect.
 
-image = "landscape.jpg"
+image = "monalisa.jpg"
 pixelated = "pixelated"
 
 pixelSize = 5
@@ -149,11 +154,15 @@ processee.setup ->
 
 processee.once ->
   @canvasSize = @sizeOf image
-  @makeNewImage pixelated, image
-  @forEachPixelOf pixelated, (pixel) ->
-    pixel.x = pixel.x - (pixel.x % pixelSize)
-    pixel.y = pixel.y - (pixel.y % pixelSize)
-    return @getImagePixel pixelated, pixel
+  @makeNewImage
+    name: pixelated
+    copy: image
+  @forEachPixelOf
+    image: pixelated
+    do: (pixel) ->
+      pixel.x = pixel.x - (pixel.x % pixelSize)
+      pixel.y = pixel.y - (pixel.y % pixelSize)
+      return @getImagePixel pixelated, pixel
   @drawImage pixelated
 </div>
 
@@ -161,7 +170,7 @@ processee.once ->
 # See example focalpixelate instead.
 </div>
 
-<div class="example" id="ex-focalpixelate">
+<div id="ex-focalpixelate">
 # Focal pixelate
 # Assignment code for COMP3419.
 # This effect pixelates an image a variable amount. At the 'focal point'
@@ -172,7 +181,7 @@ processee.once ->
 
 # Define options for the landscape image.
 landscape =
-  # mage file loaded from server.
+  # Image file loaded from server.
   image: "landscape.jpg"
   # Maximum pixelation (i.e. 10 pixels/pixel).
   maxPixelSize: 10
@@ -257,6 +266,7 @@ processee.everyFrame ->
 
 processee.setup ->
   @webcam = on
+  @webcamImageName = "webcam"
 
 # Press Ctrl-Enter or the run button to take a snapshot!
 processee.once ->
@@ -268,21 +278,19 @@ processee.once ->
 # Threshold
 # A threshold filter.
 
-image = "lenna.jpg"
+file = "lenna.jpg"
 
 processee.setup ->
-  @loadImage image
+  @loadImage file
 
 processee.once ->
-  @canvasSize = @sizeOf image
-  @forEachPixelOf image, threshold
-  @drawImage image
+  @canvasSize = @sizeOf file
+  @forEachPixelOf
+    image: file
+    do: threshold
+  @drawImage file
 
-threshold = (pixel) ->
-  if pixel.red + pixel.green + pixel.blue > 384
-    gray 255
-  else
-    gray 0
+threshold = (pixel) -> gray (pixel.red + pixel.green + pixel.blue > 384) * 255
 </div>
 
 <div class="example" id="ex-pixels">
@@ -290,9 +298,12 @@ threshold = (pixel) ->
 # Create your own image with pixel data.
 
 processee.once ->
-  @makeNewImage "img", { width: 255, height: 255 }
+  @makeNewImage
+    name: "img"
+    width: 255
+    height: 255
   @canvasSize = @sizeOf "img"
-  @forEachPixelOf "img", chooseColor
+  @forEachPixelOf {image: "img", do: chooseColor}
   @drawImage "img"
 
 chooseColor = (pixel) ->
@@ -303,56 +314,59 @@ chooseColor = (pixel) ->
 # Blur
 # A simple image blur algorithm.
 
-image = "lenna.jpg"
+file = "lenna.jpg"
 
 processee.setup ->
-  @loadImage image
+  @loadImage file
 
 processee.once ->
-  @canvasSize = @sizeOf image
-  @forEachPixelOf image, @convolveWith {
-    matrix: [
-      1, 1, 1,
-      1, 1, 1,
-      1, 1, 1,
-    ]
-    scale: 1/9
-  }
-  @drawImage image
+  @canvasSize = @sizeOf file
+  @forEachPixelOf
+    image: file
+    do: @convolveWith
+      matrix: [
+        1, 1, 1,
+        1, 1, 1,
+        1, 1, 1,
+      ]
+      scale: 1/9
+  @drawImage file
 </div>
 
 <div class="example" id="ex-sharpen">
 # Sharpen
 # Uses the unsharp mask algorithm.
 
-image = "lenna.jpg"
+file = "lenna.jpg"
 
 processee.setup ->
-  @loadImage image
+  @loadImage file
 
 processee.once ->
-  @canvasSize = @sizeOf image
-  @forEachPixelOf image, @convolveWith [
-     0, -1,  0,
-    -1,  5, -1,
-     0, -1,  0,
-  ]
-  @drawImage image
+  @canvasSize = @sizeOf file
+  @forEachPixelOf
+    image: file
+    do: @convolveWith [
+       0, -1,  0,
+      -1,  5, -1,
+       0, -1,  0,
+    ]
+  @drawImage file
 </div>
 
 <div class="example" id="ex-median">
 # Median
 # An example of a median blur filter.
 
-image = "monalisa.jpg"
+file = "monalisa.jpg"
 
 processee.setup ->
-  @loadImage image
+  @loadImage file
 
 processee.once ->
-  @canvasSize = @sizeOf image
-  @forEachPixelOf image, median
-  @drawImage image
+  @canvasSize = @sizeOf file
+  @forEachPixelOf {image: file, do: median}
+  @drawImage file
 
 median = (pixel) ->
   reds = []

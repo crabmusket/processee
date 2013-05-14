@@ -50,6 +50,29 @@ canvas:active, canvas:focus {
 	position: absolute;
 }
 
+.button {
+	margin-bottom: 20px;
+	width: 50px;
+	height: 50px;
+	display: block;
+	border-radius: 5px;
+	background-size: 32px;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.button.small {
+	background-size: 16px;
+	border-radius: 4px;
+	width: 20px;
+	height: 20px;
+	margin: 0;
+}
+
+.button:hover {
+	cursor: pointer;
+}
+
 .buttons {
 	position: fixed;
 	right: 20px;
@@ -57,21 +80,35 @@ canvas:active, canvas:focus {
 	z-index: 15;
 }
 
-.button {
-	margin-bottom: 20px;
-	width: 50px;
-	height: 50px;
-	display: block;
-	border-radius: 5px;
+.buttons .button {
 	background-color: darkBlue;
-	background-size: 32px;
-	background-position: center;
-	background-repeat: no-repeat;
 }
 
-.button:hover {
+.buttons .button:hover {
 	background-color: blue;
-	cursor: pointer;
+}
+
+.output-buttons {
+	position: relative;
+	top: -1.5em;
+}
+
+.output-buttons .button {
+	background-color: gray;
+	display: inline-block;
+}
+
+.output-buttons .button:hover {
+	background-color: lightGray;
+}
+
+.output-buttons p {
+	display: inline;
+	line-height: 20px;
+	position: relative;
+	top: -3px;
+	color: gray;
+	font-family: sans-serif;
 }
 
 .run-image { background-image: url('../ui/run.png'); }

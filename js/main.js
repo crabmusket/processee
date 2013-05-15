@@ -4,7 +4,7 @@ window.setExampleByHash = function() {
 		if(text) {
 			window.cm.setValue(text);
 		}
-		window.processee.run();
+		window.processee.init().run(window.cm.getValue());
 	}
 };
 window.addEventListener("hashchange", window.setExampleByHash, false);

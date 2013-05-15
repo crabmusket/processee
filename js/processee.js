@@ -65,25 +65,27 @@ window.processee = {
 		window.processee.mouse['click'].push(fn);
 	},
 
-	run: function() {
+	init: function() {
 		if(window.processingInstance) window.processingInstance.exit();
 		window.processee.layers = [];
 		window.processee.setups = [];
 		window.processee.mouse = {};
 		$('#processing')[0].width = 0;
+		return window.processee;
+	},
 
-		var code = "";
-		try { code = CoffeeScript.compile(window.cm.getValue()); }
-		catch(err) { window.processee.handleCompileError(err); }
-
-		try { eval(code); }
-		catch(err) { window.processee.handleRuntimeError(err); }
-
+	run: function(coffee) {
+		if(coffee) {
+			try { var js = CoffeeScript.compile(coffee); }
+			catch(err) { window.processee.handleCompileError(err); }
+			try { eval(js); }
+			catch(err) { window.processee.handleRuntimeError(err); }
+		}
 		window.processee.layers.sort();
-
 		window.processingInstance = new Processing(
 			$('#processing')[0],
 			window.processee.create());
+		return window.processee;
 	},
 
 	handleCompileError: function(e) {

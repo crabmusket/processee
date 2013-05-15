@@ -89,7 +89,11 @@ window.processee = {
 	},
 
 	handleCompileError: function(e) {
-		alert('Syntax error on line ' + (e.location.first_line + 1));
+		if(e.location) {
+			alert('Syntax error on line ' + (e.location.first_line + 1));
+		} else {
+			console.log(e.toString());
+		}
 	},
 
 	handleRuntimeError: function(e) {

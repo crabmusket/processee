@@ -363,31 +363,6 @@ window.processee.create = function() {
 			}
 		};
 
-		p.convolveWith = function(mat, scale) {
-			if(typeof mat == 'object' && !mat.length) {
-				scale = mat.scale;
-				mat = mat.matrix || mat.mat;
-			}
-			if(scale === undefined) {
-				scale = 1;
-			}
-			var diam = Math.sqrt(mat.length);
-			if(parseFloat(diam) != parseInt(diam)) {
-				console.log('Matrix', mat, 'is not square!');
-				return;
-			}
-			return function(pixel) {
-				var sumR = 0, sumG = 0, sumB = 0, i = 0;
-				p.forEachNeighborOf(pixel, function(pix) {
-					sumR += pix.red * mat[i] * scale;
-					sumG += pix.green * mat[i] * scale;
-					sumB += pix.blue * mat[i] * scale;
-					i++;
-				});
-				return objToColor({red: sumR, green: sumG, blue: sumB});
-			}
-		};
-
 		p.__defineSetter__('fillColor', function(c) {
 			c = objToColor(c ? c : {gray: 255});
 			p.__stack[p.__stack.length-1].fill = {red: c.red, green: c.green, blue: c.blue, alpha: c.alpha};

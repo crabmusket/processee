@@ -19,6 +19,7 @@
 
 	<script type="text/javascript" src="./js/main.js"></script>
 	<script type="text/javascript" src="./js/processee.js"></script>
+	<script type="text/javascript" src="./js/filters.js"></script>
 </head>
 
 <body>
@@ -221,7 +222,7 @@ pixelate = ->
   # This helper calls a function on every pixel in the image, and puts the
   # return values into a new image map of the same dimensions. After all
   # pixels are processed, the old image data is replaced with the new.
-  @forEachPixelOf image, (pixel) ->
+  @forEachPixelOf image: image, do: (pixel) ->
     # First, calculate the distance (in pixels) to the focal point.
     dist = Math.sqrt(Math.pow(focusX - pixel.x, 2) +
            Math.pow(focusY - pixel.y, 2))
@@ -271,11 +272,10 @@ processee.setup ->
 
 processee.once ->
   @canvasSize = @sizeOf file
-  @forEachPixelOf
-    image: file
-    do: threshold
+  @forEachPixelOf image: file, do: threshold
   @drawImage file
 
+# Note that this is built in as filters.threshold
 threshold = (pixel) -> gray: (pixel.red + pixel.green + pixel.blue > 384) * 255
 </div>
 
@@ -308,7 +308,7 @@ processee.once ->
   @canvasSize = @sizeOf file
   @forEachPixelOf
     image: file
-    do: @convolveWith
+    do: filters.convolveWith
       matrix: [
         1, 1, 1,
         1, 1, 1,

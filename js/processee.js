@@ -264,6 +264,22 @@ window.processee.create = function() {
 			return nimg;
 		};
 
+		p.copyImage = function(cfg) {
+			var nimg = undefined;
+			var img = p.__getImage(cfg.from);
+			var name = cfg.to;
+			if(img) {
+				nimg = $('#processee-internal-canvas')[0].getContext('2d').createImageData(img.width, img.height);
+				nimg.data.set(img.data);
+			} else {
+				p.__imageNotLoaded(cfg.from);
+			}
+			if(name !== undefined && typeof name == "string") {
+				p.__imageData[name] = nimg;
+			}
+			return nimg;
+		};
+
 		function getPixelFromArray(p, a, i) {
 			p.red = a[i];
 			p.green = a[i+1];

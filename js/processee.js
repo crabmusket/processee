@@ -334,8 +334,7 @@ window.processee.create = function() {
 					if(stored) {
 						p.__imageData[file] = tempData;
 					} else {
-						//TODO: this doesn't work for some reason.
-						img.data = tempData;
+						img.data = tempData.data;
 					}
 				}
 				return tempData;

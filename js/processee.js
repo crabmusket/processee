@@ -252,7 +252,7 @@ window.processee.create = function() {
 					nimg = $('#processee-internal-canvas')[0].getContext('2d').createImageData(img.width, img.height);
 					nimg.data.set(img.data);
 				} else {
-					p.__imageNotLoaded(copyFrom);
+					p.__imageNotLoaded(source);
 				}
 			} else if(width !== undefined && height !== undefined) {
 				nimg = $('#processee-internal-canvas')[0].getContext('2d')

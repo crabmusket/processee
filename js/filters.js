@@ -31,7 +31,7 @@ window.filters = {
 		}
 		return function(pixel) {
 			var sumR = 0, sumG = 0, sumB = 0, i = 0;
-			p.forEachNeighborOf(pixel, function(pix) {
+			this.forEachNeighborOf(pixel, function(pix) {
 				sumR += pix.red * mat[i] * scale;
 				sumG += pix.green * mat[i] * scale;
 				sumB += pix.blue * mat[i] * scale;

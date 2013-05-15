@@ -91,64 +91,23 @@ window.processee = {
 	},
 
 	handleRuntimeError: function(e) {
-		if(!confirm('Error: ' + e.toString())) {
+		if(!confirm('Error: ' + e.message)) {
 			window.processingInstance.exit();
 		}
 	},
 };
 
-function rgb(r, g, b) {
-	return {
-		mode: 'rgb',
-		red: r, green: g, blue: b, alpha: 255,
-	};
-}
-
-function rgba(r, g, b, a) {
-	return {
-		mode: 'rgb',
-		red: r, green: g, blue: b, alpha: a
-	};
-}
-
-function gray(v) {
-	return {
-		mode: 'rgb',
-		red: v, green: v, blue: v, alpha: 255,
-	};
-}
-
-function hsv(h, s, v) {
-	return {
-		mode: 'hsv',
-		red: h, green: s, blue: v, alpha: 255,
-	};
-}
-
-function point(x, y) {
-	return {
-		x: x,
-		y: y,
-	};
-}
-
-function polar(r, theta) {
-	return {
-		x: r * Math.cos(theta),
-		y: r * Math.sin(theta),
-	};
-}
-
-function dim(w, h) {
-	return {
-		w: w,
-		h: h,
-	};
-}
-
 function sort(a) {
 	a.sort();
 	return a;
+}
+
+function objToColor(c) {
+	var r = c.r || c.red || c.gray || 0;
+	var g = c.g || c.green || c.gray || 0;
+	var b = c.b || c.blue || c.gray || 0;
+	var a = c.a || c.alpha || 255;
+	return {r:r, red:r, g:g, green:g, b:b, blue:b, a:a, alpha:a};
 }
 
 window.processee.create = function() {
@@ -159,8 +118,9 @@ window.processee.create = function() {
 			window.positionOutput();
 		});
 
-		p.__defineSetter__("canvasBackground", function(c) {
-			p.background(c.red, c.green, c.blue, c.alpha);
+		p.__defineSetter__("canvasColor", function(c) {
+			c = objToColor(c);
+			p.background(c.r, c.g, c.b, c.a);
 		});
 
 		p.drawLine = function(line) {
@@ -242,6 +202,13 @@ window.processee.create = function() {
 			}
 		};
 
+		p.__imageNotLoaded = function(file) {
+			throw {
+				name: 'ImageLoadError',
+				message: 'Image file "' + file + '" has not been loaded.',
+			};
+		};
+
 		p.drawImage = function(file) {
 			file = p.__getImage(file);
 			if(file !== undefined) {
@@ -251,7 +218,7 @@ window.processee.create = function() {
 				tempCanvas.getContext('2d').putImageData(file, 0, 0);
 				$('#processing')[0].getContext('2d').drawImage(tempCanvas, 0, 0);
 			} else {
-				console.log('Image file "' + file + '" has not been loaded.');
+				p.__imageNotLoaded(file);
 			}
 		};
 
@@ -262,6 +229,8 @@ window.processee.create = function() {
 					width: img.width,
 					height: img.height,
 				};
+			} else {
+				p.__imageNotLoaded(file);
 			}
 		};
 
@@ -277,7 +246,7 @@ window.processee.create = function() {
 					nimg = $('#processee-internal-canvas')[0].getContext('2d').createImageData(img.width, img.height);
 					nimg.data.set(img.data);
 				} else {
-					console.log('Image file "' + copyFrom + '" has not been loaded.');
+					p.__imageNotLoaded(copyFrom);
 				}
 			} else if(width !== undefined && height !== undefined) {
 				nimg = $('#processee-internal-canvas')[0].getContext('2d')
@@ -319,7 +288,7 @@ window.processee.create = function() {
 				getPixelFromArray(pixel, img.data, i);
 				return pixel;
 			} else {
-				console.log('Image file "' + file + '" has not been loaded.');
+				p.__imageNotLoaded(file);
 			}
 		};
 
@@ -329,7 +298,7 @@ window.processee.create = function() {
 				var i = pixel.x*4 + pixel.y*4*img.width;
 				setArrayFromPixel(img.data, i, pixel);
 			} else {
-				console.log('Image file "' + file + '" has not been loaded.');
+				p.__imageNotLoaded(file);
 			}
 		};
 
@@ -348,19 +317,24 @@ window.processee.create = function() {
 					pixel.x = x;
 					pixel.y = y;
 					pixel.file = file;
-					var result = fn.call(p, pixel);
+					var result = objToColor(fn.call(p, pixel));
 					setArrayFromPixel(tempData.data, i, result);
 					if(++x == img.width) {
 						x = 0;
 						y++;
 					}
 				}
-				if(stored && cfg.inPlace) {
-					p.__imageData[file] = tempData;
+				if(cfg.inPlace) {
+					if(stored) {
+						p.__imageData[file] = tempData;
+					} else {
+						//TODO: this doesn't work for some reason.
+						img.data = tempData;
+					}
 				}
 				return tempData;
 			} else {
-				console.log('Image file "' + file + '" has not been loaded.');
+				p.__imageNotLoaded(file);
 			}
 		};
 
@@ -410,19 +384,12 @@ window.processee.create = function() {
 					sumB += pix.blue * mat[i] * scale;
 					i++;
 				});
-				return rgb(sumR, sumG, sumB);
+				return objToColor({red: sumR, green: sumG, blue: sumB});
 			}
 		};
 
 		p.__defineSetter__('fillColor', function(c) {
-			if(c === null) {
-				c = rgba(0, 0, 0, 0);
-			}
-			if(!c.mode) {
-				console.log('Cannot set fill without a color mode. Given:', c);
-				return;
-			}
-			p.__stack[p.__stack.length-1].mode = c.mode == 'hsv' ? p.HSV : p.RGB;
+			c = objToColor(c ? c : {gray: 255});
 			p.__stack[p.__stack.length-1].fill = {red: c.red, green: c.green, blue: c.blue, alpha: c.alpha};
 			p.__stackSet();
 		});
@@ -442,13 +409,7 @@ window.processee.create = function() {
 		});
 
 		p.__defineSetter__('strokeColor', function(c) {
-			if(c === null) {
-				c = rgba(0, 0, 0, 0);
-			}
-			if(!c.mode) {
-				console.log('Cannot set stroke without a color mode. Given:', c);
-				return;
-			}
+			c = objToColor(c ? c : {gray: 0});
 			p.__stack[p.__stack.length-1].stroke = {red: c.red, green: c.green, blue: c.blue, alpha: c.alpha};
 			p.__stackSet();
 		});
@@ -495,7 +456,6 @@ window.processee.create = function() {
 		p.__stack = [];
 		p.__stackSet = function() {
 			var c = p.__stack[p.__stack.length-1];
-			p.colorMode(c.mode);
 			p.fill(c.fill.red, c.fill.green, c.fill.blue, c.fill.alpha);
 			p.stroke(c.stroke.red, c.stroke.green, c.stroke.blue, c.stroke.alpha);
 			$('#processing')[0].getContext('2d').globalAlpha = 1 - c.transparency;
@@ -504,7 +464,6 @@ window.processee.create = function() {
 			var c = p.__stack[p.__stack.length-1];
 			p.pushMatrix();
 			p.__stack.push({
-				mode: c.mode,
 				fill: c.fill,
 				stroke: c.stroke,
 				scale: c.scale,
@@ -526,9 +485,8 @@ window.processee.create = function() {
 				p.__stackPop();
 			}
 			p.__stack = [{
-				mode: p.RGB,
-				fill: gray(255),
-				stroke: gray(0),
+				fill: objToColor({gray: 255}),
+				stroke: objToColor({gray: 0}),
 				origin: { x: 0, y: 0 },
 				rotation: 0,
 				transparency: 0,

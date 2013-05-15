@@ -52,8 +52,8 @@
 # Draw a pretty flower.
 
 processee.setup ->
-  @canvasSize = dim 300, 300
-  @canvasBackground = gray 255
+  @canvasSize = width: 300, height: 300
+  @canvasColor = gray: 255
 
 processee.once ->
   @at x: 150, y: 250, stalk
@@ -62,13 +62,13 @@ processee.once ->
   @at x: 125, y: 230, leaf
 
 stalk = ->
-  @fillColor = rgb 0, 255, 0
-  @strokeColor = rgb 0, 255, 0
+  @fillColor = green: 150
+  @strokeColor = green: 150
   @drawRect width: 10, height: 200
 
 leaf = ->
-  @fillColor = rgb 0, 255, 0
-  @strokeColor = rgb 0, 255, 0
+  @fillColor = green: 255
+  @strokeColor = green: 255
   @drawEllipse width: 40, height: 20
 
 petals = ->
@@ -77,8 +77,8 @@ petals = ->
     @rotatedBy angle, petal
 
 petal = ->
-  @fillColor = rgb 255, 0, 0
-  @strokeColor = rgb 255, 0, 0
+  @fillColor = red: 255
+  @strokeColor = red: 255
   @drawSquare size: 100
 </div>
 
@@ -118,8 +118,8 @@ processee.once ->
 # Demonstrates frame-by-frame animation.
 
 processee.setup ->
-  @canvasSize = dim 300, 300
-  @canvasBackground = gray 255
+  @canvasSize = width: 300, height: 300
+  @canvasColor = gray: 255
 
 x = 0
 y = 0
@@ -128,7 +128,7 @@ dy = 0.9
 
 processee.everyFrame ->
   # Uncomment this to disable the trail:
-  #@canvasBackground = gray 255
+  #@canvasColor = gray: 255
   @drawSquare
     x: x
     y: y
@@ -246,19 +246,6 @@ pixelate = ->
   @drawImage image
 </div>
 
-<div id="ex-webcam">
-# Webcam
-# Stare at your own face in your browser!
-processee.setup ->
-  @webcam = on
-
-processee.once ->
-  @canvasSize = @sizeOf "webcam"
-
-processee.everyFrame ->
-  @drawImage "webcam"
-</div>
-
 <div class="example" id="ex-photobooth">
 # Photobooth
 # Capturing still images from the webcam.
@@ -289,7 +276,7 @@ processee.once ->
     do: threshold
   @drawImage file
 
-threshold = (pixel) -> gray (pixel.red + pixel.green + pixel.blue > 384) * 255
+threshold = (pixel) -> gray: (pixel.red + pixel.green + pixel.blue > 384) * 255
 </div>
 
 <div class="example" id="ex-pixels">
@@ -305,8 +292,7 @@ processee.once ->
   @forEachPixelOf image: "img", do: chooseColor
   @drawImage "img"
 
-chooseColor = (pixel) ->
-  gray ((pixel.x + pixel.y) % 255)
+chooseColor = (pixel) -> gray: ((pixel.x + pixel.y) % 255)
 </div>
 
 <div class="example" id="ex-blur">
@@ -377,7 +363,7 @@ median = (pixel) ->
   reds = sort reds
   greens = sort greens
   blues = sort blues
-  rgb reds[4], greens[4], blues[4]
+  return red: reds[4], green: greens[4], blue: blues[4]
 </div>
 
 <div class="example" id="ex-objects">
@@ -390,20 +376,20 @@ class Square
     self.pos.x += self.vel.x
     self.pos.y += self.vel.y
     @at self.pos, ->
-      @strokeColor = rgb 0
-      @fillColor = rgb 255
-      @drawSquare {size: 20}
+      @strokeColor = gray: 128
+      @fillColor = red: 100
+      @drawSquare size: 20
 
-s = new Square {x:0,y:0}, {x:1,y:1}
-p = new Square {x:0,y:300}, {x:1,y:-1}
+sq1 = new Square (x: 0, y: 0),   (x: 1, y: 1)
+sq2 = new Square (x: 0, y: 300), (x: 1, y: -1)
 
-processee.objects [s, p]
+processee.objects [sq1, sq2]
 
 processee.setup ->
-  @canvasSize = dim 300, 300
+  @canvasSize = width: 300, height: 300
 
 processee.everyFrame ->
-  @canvasBackground = gray 255
+  @canvasColor = gray: 255
 </div>
 
 <div class="example" id="ex-mouse">
@@ -411,8 +397,8 @@ processee.everyFrame ->
 # Demonstrates mouse movement and click capturing.
 
 processee.setup ->
-  @canvasSize = dim 300, 300
-  @canvasBackground = gray 255
+  @canvasSize = width: 300, height: 300
+  @canvasColor = gray: 255
 
 processee.onMouseMove (event) ->
   @drawLine

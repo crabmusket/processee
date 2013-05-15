@@ -140,6 +140,43 @@ processee.everyFrame ->
   dy = if y < 0 or y > 300 then -dy else dy
 </div>
 
+<div class="example" id="ex-histogram">
+# Histogram equalisation
+# Increases the constast of a greyscale image.
+
+processee.setup ->
+  @canvasSize = width: 300, height: 300
+  # Create a nice wavy pattern.
+  @makeNewImage
+    name: "low"
+    width: 300
+    height: 300
+  @forEachPixelOf image: "low", do: (pixel) ->
+    gray: (Math.sin pixel.x / 9) * (Math.sin pixel.y / 13) * 64 + 128
+  @drawImage "low"
+  # High-contrast image.
+  @makeNewImage
+    name: "high"
+    copy: "low"
+  # Determine the lowest and highest grey values.
+  min = 255
+  max = 0
+  @forEachPixelOf image: "high", do: (pixel) ->
+    min = pixel.red if pixel.red < min
+    max = pixel.red if pixel.red > max
+    pixel
+  # Scale all pixels from min to max.
+  @forEachPixelOf image: "high", do: (pixel) ->
+    gray: (pixel.red - min) / (max - min) * 255
+
+hist = off
+
+# Click the image to toggle low and high contrast.
+processee.onClick ->
+  hist = !hist
+  @drawImage (if hist is off then "low" else "high")
+</div>
+
 <div class="example" id="ex-pixelate">
 # Pixelate
 # Simple pixelation effect.

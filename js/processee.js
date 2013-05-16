@@ -92,11 +92,12 @@ window.processee = {
 		if(e.location) {
 			alert('Syntax error on line ' + (e.location.first_line + 1));
 		} else {
-			console.log(e.toString());
+			console.log(e.stack);
 		}
 	},
 
 	handleRuntimeError: function(e) {
+		console.log(e.stack);
 		if(!confirm('Error: ' + e.message)) {
 			window.processingInstance.exit();
 		}
@@ -329,7 +330,7 @@ window.processee.create = function() {
 			var stored = typeof file == "string";
 			var img = p.__getImage(file);
 			var fn = cfg.do;
-			if(cfg.inPlace === undefined) cfg.inPlace = true;
+			if(cfg.inPlace === undefined) cfg.inPlace = false;
 			if(img !== undefined) {
 				var tempData = $('#processee-internal-canvas')[0].getContext('2d').createImageData(img.width, img.height);
 				var x = 0, y = 0;
@@ -339,8 +340,10 @@ window.processee.create = function() {
 					pixel.x = x;
 					pixel.y = y;
 					pixel.file = file;
-					var result = objToColor(fn.call(p, pixel));
-					setArrayFromPixel(tempData.data, i, result);
+					var result = fn.call(p, pixel);
+					if(result !== undefined) {
+						setArrayFromPixel(tempData.data, i, objToColor(result));
+					}
 					if(++x == img.width) {
 						x = 0;
 						y++;
@@ -357,6 +360,12 @@ window.processee.create = function() {
 			} else {
 				p.__imageNotLoaded(file);
 			}
+		};
+
+		p.setEachPixelOf = function(cfg) {
+			cfg.do = cfg.to;
+			if(cfg.inPlace === undefined) cfg.inPlace = true;
+			return p.forEachPixelOf(cfg);
 		};
 
 		p.forEachNeighborOf = function(pixel, fn) {

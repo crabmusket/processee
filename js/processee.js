@@ -354,10 +354,12 @@ window.processee.create = function() {
 					if(stored) {
 						p.__imageData[file] = tempData;
 					} else {
-						img.data = tempData.data;
+						for(var i = 0; i < img.data.length; i++) {
+							img.data[i] = tempData.data[i];
+						}
 					}
 				}
-				return tempData;
+				return cfg.inPlace? file : tempData;
 			} else {
 				p.__imageNotLoaded(file);
 			}

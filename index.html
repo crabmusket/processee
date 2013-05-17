@@ -144,6 +144,17 @@ processee.everyFrame ->
 # Histogram equalisation
 # Increases the constast of a greyscale image.
 
+equalize = (img) -> ->
+  # Determine the lowest and highest grey values.
+  min = 255
+  max = 0
+  @forEachPixelOf image: img, do: (pixel) ->
+    min = pixel.red if pixel.red < min
+    max = pixel.red if pixel.red > max
+  # Scale all pixels from min to max.
+  @setEachPixelOf image: img, to: (pixel) ->
+    gray: (pixel.red - min) / (max - min) * 255
+
 processee.setup ->
   @canvasSize = width: 300, height: 300
   # Create a nice wavy pattern.
@@ -158,15 +169,7 @@ processee.setup ->
   @makeNewImage
     name: "high"
     copy: "low"
-  # Determine the lowest and highest grey values.
-  min = 255
-  max = 0
-  @forEachPixelOf image: "high", do: (pixel) ->
-    min = pixel.red if pixel.red < min
-    max = pixel.red if pixel.red > max
-  # Scale all pixels from min to max.
-  @setEachPixelOf image: "high", to: (pixel) ->
-    gray: (pixel.red - min) / (max - min) * 255
+  @do equalize "high"
 
 hist = off
 
@@ -308,11 +311,12 @@ processee.setup ->
 
 processee.once ->
   @canvasSize = @sizeOf file
-  @setEachPixelOf image: file, to: thresholded
+  @do threshold file
   @drawImage file
 
-# Note that this is built in as filters.threshold
-thresholded = (pixel) -> gray: (pixel.red + pixel.green + pixel.blue > 384) * 255
+threshold = (img) -> ->
+  @setEachPixelOf image: img, to: (pixel) ->
+    gray: if pixel.red + pixel.green + pixel.blue > 384 then 255 else 0
 </div>
 
 <div class="example" id="ex-pixels">

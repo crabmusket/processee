@@ -122,7 +122,9 @@ window.processee.create = function() {
 		p.__defineSetter__("canvasSize", function(s) {
 			p.size(s.w || s.width || 100,
 			       s.h || s.height || 100);
-			window.positionOutput();
+			if(window.positionOutput) {
+				window.positionOutput();
+			}
 		});
 
 		p.__defineSetter__("canvasColor", function(c) {

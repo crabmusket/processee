@@ -323,6 +323,7 @@ window.processee.create = function() {
 			} else {
 				p.__imageNotLoaded(file);
 			}
+			return img;
 		};
 
 		p.forEachPixelOf = function(cfg) {
@@ -541,8 +542,9 @@ window.processee.create = function() {
 
 		p.do = function(fn) {
 			p.__stackPush();
-			fn.call(p);
+			var result = fn.call(p);
 			p.__stackPop();
+			return result;
 		};
 
 		p.at = function(pos, fn) {
@@ -552,18 +554,20 @@ window.processee.create = function() {
 				y: pos.y || pos.posY || 0
 			};
 			p.__stackPush();
-			fn.call(p);
+			var result = fn.call(p);
 			p.__stackPop();
 			p.__stackPop();
+			return result;
 		};
 
 		p.rotatedBy = function(angle, fn) {
 			p.__stackPush();
 			p.rotation = angle;
 			p.__stackPush();
-			fn.call(p);
+			var result = fn.call(p);
 			p.__stackPop();
 			p.__stackPop();
+			return result;
 		};
 
 		p.__webcamCapture = function() {

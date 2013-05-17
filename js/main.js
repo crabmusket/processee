@@ -39,7 +39,9 @@ $(document).ready(function() {
 		lineNumbers: true,
 		tabMode: 'shift',
 		extraKeys: {
-			'Ctrl-Enter': function() { window.processee.run(window.cm.getValue()); },
+			'Ctrl-Enter': function() {
+				window.processee.init().run(window.cm.getValue());
+			},
 		},
 	});
 

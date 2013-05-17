@@ -201,7 +201,7 @@ window.processee.create = function() {
 			          circ.r || circ.radius);
 		};
 
-		p.__getImage = function(i) {
+		p.getImage = function(i) {
 			if(typeof i == "string") {
 				return p.__imageData[i];
 			} else {
@@ -217,7 +217,7 @@ window.processee.create = function() {
 		};
 
 		p.drawImage = function(file) {
-			file = p.__getImage(file);
+			file = p.getImage(file);
 			if(file !== undefined) {
 				var tempCanvas = $('#processee-internal-canvas')[0];
 				tempCanvas.width = file.width;
@@ -230,7 +230,7 @@ window.processee.create = function() {
 		};
 
 		p.sizeOf = function(file) {
-			var img = p.__getImage(file);
+			var img = p.getImage(file);
 			if(img !== undefined) {
 				return {
 					width: img.width,
@@ -248,7 +248,7 @@ window.processee.create = function() {
 			var width = cfg.w || cfg.width;
 			var height = cfg.h || cfg.height;
 			if(source) {
-				var img = p.__getImage(source);
+				var img = p.getImage(source);
 				if(img !== undefined) {
 					nimg = $('#processee-internal-canvas')[0].getContext('2d').createImageData(img.width, img.height);
 					nimg.data.set(img.data);
@@ -267,7 +267,7 @@ window.processee.create = function() {
 
 		p.copyImage = function(cfg) {
 			var nimg = undefined;
-			var img = p.__getImage(cfg.from);
+			var img = p.getImage(cfg.from);
 			var name = cfg.to;
 			if(img) {
 				nimg = $('#processee-internal-canvas')[0].getContext('2d').createImageData(img.width, img.height);
@@ -296,7 +296,7 @@ window.processee.create = function() {
 		};
 
 		p.getImagePixel = function(file, x, y) {
-			var img = p.__getImage(file);
+			var img = p.getImage(file);
 			if(img !== undefined) {
 				if(typeof x == 'object') {
 					y = x.y;
@@ -316,7 +316,7 @@ window.processee.create = function() {
 		};
 
 		p.setImagePixel = function(file, pixel) {
-			var img = p.__getImage(file);
+			var img = p.getImage(file);
 			if(img !== undefined) {
 				var i = pixel.x*4 + pixel.y*4*img.width;
 				setArrayFromPixel(img.data, i, pixel);
@@ -329,7 +329,7 @@ window.processee.create = function() {
 		p.forEachPixelOf = function(cfg) {
 			var file = cfg.image || cfg.img;
 			var stored = typeof file == "string";
-			var img = p.__getImage(file);
+			var img = p.getImage(file);
 			var fn = cfg.do;
 			if(cfg.inPlace === undefined) cfg.inPlace = false;
 			if(img !== undefined) {
@@ -374,7 +374,7 @@ window.processee.create = function() {
 		p.forEachNeighborOf = function(pixel, fn) {
 			var x = pixel.x,
 			    y = pixel.y;
-			var img = p.__getImage(pixel.file);
+			var img = p.getImage(pixel.file);
 			if(!img) {
 				console.log("Pixel is not part of an image.");
 				return;

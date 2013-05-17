@@ -457,6 +457,28 @@ processee.onClick (event) ->
     y: event.y
     size: 20
 </div>
+<div class="example" id="ex-pipeline">
+# Pipeline
+# Compose multiple image processing steps.
+
+file = "lenna.jpg"
+
+processee.setup ->
+  @loadImage file
+
+processee.once ->
+  @canvasSize = @sizeOf file
+  @drawImage @do increaseRed 100, @do muteColors file
+
+increaseRed = (amount, img) -> ->
+  @setEachPixelOf image: img, to: (pixel) ->
+    pixel.red += amount
+    pixel
+
+muteColors = (img) -> ->
+  @setEachPixelOf image: img, to: (p) ->
+    red: p.red / 2, green: p.green / 2, blue: p.blue / 2
+</div>
 		</div>
 	</div>
 	<div class="about">

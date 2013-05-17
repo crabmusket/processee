@@ -305,7 +305,7 @@ window.processee.create = function() {
 				var i = x*4 + y*4*img.width;
 				if(i >= img.data.length) {
 					console.log("Pixel", x, y, "is out of bounds!");
-					return;
+					return objToColor({gray: 0, alpha: 0});
 				}
 				var pixel = {};
 				getPixelFromArray(pixel, img.data, i);

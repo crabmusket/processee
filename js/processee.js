@@ -588,6 +588,7 @@ window.processee.create = function() {
 			// Call every setup function.
 			var setups = window.processee.setups;
 			for(var i = 0; i < setups.length; i++) {
+				p.reset();
 				try { setups[i].call(p); }
 				catch(err) { window.processee.handleRuntimeError(err); }
 			}

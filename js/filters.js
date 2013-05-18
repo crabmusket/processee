@@ -13,7 +13,7 @@ window.filters = {
 		return {gray: (pixel.red + pixel.green + pixel.blue) / 3};
 	},
 
-	convolvedWith: function(mat, scale) {
+	convolveWith: function(mat, scale) {
 		if(typeof mat == 'object' && !mat.length) {
 			scale = mat.scale;
 			mat = mat.matrix || mat.mat;

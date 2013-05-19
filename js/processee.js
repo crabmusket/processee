@@ -109,11 +109,19 @@ function sort(a) {
 	return a;
 }
 
+function firstDefined(a) {
+	for(var i = 0; i < a.length; i++) {
+		if(a[i] !== undefined)
+			return a[i];
+	}
+	return undefined;
+}
+
 function objToColor(c) {
-	var r = c.r || c.red || c.gray || 0;
-	var g = c.g || c.green || c.gray || 0;
-	var b = c.b || c.blue || c.gray || 0;
-	var a = c.a || c.alpha || 255;
+	var r = firstDefined([c.r, c.red  , c.gray, 0]);
+	var g = firstDefined([c.g, c.green, c.gray, 0]);
+	var b = firstDefined([c.b, c.blue , c.gray, 0]);
+	var a = firstDefined([c.a, c.alpha, 255]);
 	return {r:r, red:r, g:g, green:g, b:b, blue:b, a:a, alpha:a};
 }
 
@@ -284,10 +292,10 @@ window.processee.create = function() {
 		};
 
 		function getPixelFromArray(p, a, i) {
-			p.red = a[i];
-			p.green = a[i+1];
-			p.blue = a[i+2];
-			p.alpha = a[i+3];
+			p.r = p.red = a[i];
+			p.g = p.green = a[i+1];
+			p.b = p.blue = a[i+2];
+			p.a = p.alpha = a[i+3];
 		};
 
 		function setArrayFromPixel(a, i, p) {
@@ -297,18 +305,16 @@ window.processee.create = function() {
 			a[i+3] = p.alpha;
 		};
 
-		p.getImagePixel = function(file, x, y) {
+		p.getPixel = function(cfg) {
+			var file = cfg.of || cfg.image;
+			var x = firstDefined([cfg.x, 0]);
+			var y = firstDefined([cfg.y, 0]);
 			var img = p.getImage(file);
 			if(img !== undefined) {
-				if(typeof x == 'object') {
-					y = x.y;
-					x = x.x;
+				if(x < 0 || x >= img.width || y < 0 || y >= img.width) {
+					return objToColor({gray: 0});
 				}
 				var i = x*4 + y*4*img.width;
-				if(i >= img.data.length) {
-					console.log("Pixel", x, y, "is out of bounds!");
-					return objToColor({gray: 0, alpha: 0});
-				}
 				var pixel = {};
 				getPixelFromArray(pixel, img.data, i);
 				return pixel;
@@ -317,11 +323,15 @@ window.processee.create = function() {
 			}
 		};
 
-		p.setImagePixel = function(file, pixel) {
+		p.setPixel = function(cfg) {
+			var file = cfg.of || cfg.image;
+			var pixel = cfg.to;
+			var x = firstDefined([cfg.x, pixel.x, 0]);
+			var y = firstDefined([cfg.y, pixel.y, 0]);
 			var img = p.getImage(file);
 			if(img !== undefined) {
-				var i = pixel.x*4 + pixel.y*4*img.width;
-				setArrayFromPixel(img.data, i, pixel);
+				var i = x*4 + y*4*img.width;
+				setArrayFromPixel(img.data, i, objToColor(pixel));
 			} else {
 				p.__imageNotLoaded(file);
 			}

@@ -343,11 +343,11 @@ window.processee.create = function() {
 			var stored = typeof file == "string";
 			var img = p.getImage(file);
 			var fn = cfg.do;
-			if(cfg.progressive == undefined) cfg.progressive = false;
-			if(cfg.inPlace === undefined) cfg.inPlace = false;
+			if(cfg.inPlace == undefined) cfg.inPlace = false;
+			if(cfg.store === undefined) cfg.store = false;
 			if(img !== undefined) {
 				var tempData;
-				if(cfg.progressive) {
+				if(cfg.inPlace) {
 					tempData = img;
 				} else {
 					tempData = $('#processee-internal-canvas')[0].getContext('2d').createImageData(img.width, img.height);
@@ -368,16 +368,16 @@ window.processee.create = function() {
 						y++;
 					}
 				}
-				if(cfg.inPlace) {
+				if(cfg.store) {
 					if(stored) {
 						p.__imageData[file] = tempData;
-					} else if(!cfg.progressive) {
+					} else if(!cfg.inPlace) {
 						for(var i = 0; i < img.data.length; i++) {
 							img.data[i] = tempData.data[i];
 						}
 					}
 				}
-				return cfg.inPlace? file : tempData;
+				return cfg.store? file : tempData;
 			} else {
 				p.__imageNotLoaded(file);
 			}
@@ -385,7 +385,7 @@ window.processee.create = function() {
 
 		p.setEachPixelOf = function(cfg) {
 			cfg.do = cfg.to;
-			if(cfg.inPlace === undefined) cfg.inPlace = true;
+			if(cfg.store === undefined) cfg.store = true;
 			return p.forEachPixelOf(cfg);
 		};
 

@@ -587,6 +587,7 @@ window.processee.create = function() {
 		};
 
 		p.setup = function() {
+			p.__processeeSetup = false;
 			// Set some Processing defaults that are sane.
 			p.rectMode(p.CENTER);
 			// Call every setup function.
@@ -627,6 +628,7 @@ window.processee.create = function() {
 		};
 
 		p.__onSetup = function() {
+			p.__processeeSetup = true;
 			// Capture the webcam if we need to.
 			if(p.webcam) {
 				p.__webcamCapture();
@@ -653,6 +655,7 @@ window.processee.create = function() {
 		};
 
 		p.draw = function() {
+			if(!p.__processeeSetup) return;
 			var layers = window.processee.layers;
 			if(!layers.length) {
 				return;
@@ -686,6 +689,7 @@ window.processee.create = function() {
 		};
 
 		p.__mouseEvent = function(event) {
+			if(!p.__processeeSetup) return;
 			if(p.mouse.x === undefined) p.mouse.x = event.x;
 			if(p.mouse.y === undefined) p.mouse.y = event.y;
 			handlers = window.processee.mouse[event.type];

@@ -89,15 +89,18 @@ window.processee = {
 	},
 
 	handleCompileError: function(e) {
+		if(e.stack) {
+			console.log(e.stack);
+		}
 		if(e.location) {
 			alert('Syntax error on line ' + (e.location.first_line + 1));
-		} else {
-			console.log(e.stack);
 		}
 	},
 
 	handleRuntimeError: function(e) {
-		console.log(e.stack);
+		if(e.stack) {
+			console.log(e.stack);
+		}
 		if(!confirm('Error: ' + e.message)) {
 			window.processingInstance.exit();
 		}
@@ -220,10 +223,7 @@ window.processee.create = function() {
 		};
 
 		p.__imageNotLoaded = function(file) {
-			throw {
-				name: 'ImageLoadError',
-				message: 'Image file "' + file + '" has not been loaded.',
-			};
+			throw new Error('Image file "' + file + '" has not been loaded.');
 		};
 
 		p.drawImage = function(file) {

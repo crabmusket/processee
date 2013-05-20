@@ -114,8 +114,9 @@ function sort(a) {
 
 function firstDefined(a) {
 	for(var i = 0; i < a.length; i++) {
-		if(a[i] !== undefined)
+		if(a[i] !== undefined && !isNaN(a[i])) {
 			return a[i];
+		}
 	}
 	return undefined;
 }
@@ -187,17 +188,35 @@ window.processee.create = function() {
 		};
 
 		p.drawRect = function(rect) {
-			p.rect(rect.x || 0,
-			       rect.y || 0,
-			       rect.w || rect.width || 10,
-			       rect.h || rect.height || 10);
+			var x1, x2, y1, y2, cx, cy, width, height;
+			var cx = firstDefined([rect.x, 0]),
+			    cy = firstDefined([rect.y, 0]),
+			    width = rect.width,
+			    height = rect.height;
+			if(rect.min) {
+				x1 = firstDefined([rect.min.x, cx - width/2, 0]);
+				y1 = firstDefined([rect.min.y, cy - height/2, 0]);
+			} else {
+				x1 = firstDefined([cx - width/2, 0]);
+				y1 = firstDefined([cy - height/2, 0]);
+			}
+			if(rect.max) {
+				x2 = firstDefined([rect.max.x, cx + width/2, 0]);
+				y2 = firstDefined([rect.max.y, cy + height/2, 0]);
+			} else {
+				x2 = firstDefined([cx + width/2, 0]);
+				y2 = firstDefined([cy + height/2, 0]);
+			}
+			p.rect(x1, y1, x2 - x1, y2 - y1);
 		};
 
 		p.drawSquare = function(sq) {
-			p.rect(sq.x || sq.posX || 0,
-			       sq.y || sq.posY || 0,
-			       sq.s || sq.size || 10,
-			       sq.s || sq.size || 10);
+			p.rectMode(p.CENTER);
+			p.rect(firstDefined([sq.x, 0]),
+			       firstDefined([sq.y, 0]),
+			       firstDefined([sq.s, sq.size, 10]),
+			       firstDefined([sq.s, sq.size, 10]));
+			p.rectMode(p.CORNER);
 		};
 
 		p.drawEllipse = function(ell) {
@@ -605,7 +624,7 @@ window.processee.create = function() {
 		p.setup = function() {
 			p.__processeeSetup = false;
 			// Set some Processing defaults that are sane.
-			p.rectMode(p.CENTER);
+			p.rectMode(p.CORNER);
 			// Call every setup function.
 			var setups = window.processee.setups;
 			for(var i = 0; i < setups.length; i++) {

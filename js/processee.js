@@ -51,6 +51,12 @@ window.processee = {
 		}
 	},
 
+	clearObjects: function() {
+		for(var i = 0; i < window.processee.layers.length; i++) {
+			window.processee.getLayer(i).objects.length = 0;
+		}
+	},
+
 	onMouseMove: function(fn) {
 		if(!window.processee.mouse['move']) {
 			window.processee.mouse['move'] = [];

@@ -41,23 +41,34 @@ window.filters = {
 		}
 	},
 
-	combine: function(images) {
+	combine: function(images, fn) {
 		return function() {
 			t = this.makeNewImage({copy: images[0]});
 			for(var i = 1; i < images.length; i++) {
 				this.setEachPixelOf({
 					image: t,
 					to: function(p) {
-						thing = false;
 						p1 = this.getPixel({of: images[i], x: p.x, y: p.y});
-						p.r = p.red = Math.min(255, p.red + p1.red);
-						p.g = p.green = Math.min(255, p.green + p1.green);
-						p.b = p.blue = Math.min(255, p.blue + p1.blue);
+						p.r = p.red = fn.call(this, p.red, p1.red);
+						p.g = p.green = fn.call(this, p.green, p1.green);
+						p.b = p.blue = fn.call(this, p.blue, p1.blue);
 						return p;
 					}
 				});
 			}
 			return t;
 		};
+	},
+
+	add: function(images) {
+		return filters.combine(images, function(a, b) {
+			return Math.min(255, a+b);
+		});
+	},
+
+	sub: function(images) {
+		return filters.combine(images, function(a, b) {
+			return Math.max(0, a-b);
+		});
 	},
 }

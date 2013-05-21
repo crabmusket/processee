@@ -122,7 +122,7 @@ function firstDefined(a) {
 }
 
 function objToColor(c) {
-	var r = firstDefined([c.r, c.red  , c.gray, 0]);
+	var r = firstDefined([c.r, c.red,   c.gray, 0]);
 	var g = firstDefined([c.g, c.green, c.gray, 0]);
 	var b = firstDefined([c.b, c.blue , c.gray, 0]);
 	var a = firstDefined([c.a, c.alpha, 255]);

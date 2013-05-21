@@ -37,22 +37,23 @@ window.filters = {
 				sumB += pix.blue * mat[i] * scale;
 				i++;
 			});
-			return objToColor({red: sumR, green: sumG, blue: sumB});
+			return objToColor({red: Math.abs(sumR), green: Math.abs(sumG), blue: Math.abs(sumB)});
 		}
 	},
 
 	combine: function(images) {
 		return function() {
-			t = this.makeNewImage({ copy: images[0] });
+			t = this.makeNewImage({copy: images[0]});
 			for(var i = 1; i < images.length; i++) {
-				this.forEachPixelOf({
-					image: images[i],
-					do: function(p) {
-						p1 = this.getImagePixel(t, p.x,p.y);
-						p1.red += p.red;
-						p1.green += p.green;
-						p1.blue += p.blue;
-						this.setImagePixel(t, p1);
+				this.setEachPixelOf({
+					image: t,
+					to: function(p) {
+						thing = false;
+						p1 = this.getPixel({of: images[i], x: p.x, y: p.y});
+						p.r = p.red = Math.min(255, p.red + p1.red);
+						p.g = p.green = Math.min(255, p.green + p1.green);
+						p.b = p.blue = Math.min(255, p.blue + p1.blue);
+						return p;
 					}
 				});
 			}

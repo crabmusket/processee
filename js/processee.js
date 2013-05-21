@@ -144,6 +144,12 @@ window.processee.create = function() {
 				window.positionOutput();
 			}
 		});
+		p.__defineGetter__("canvasSize", function() {
+			return {
+				width: $('#processing').width(),
+				height: $('#processing').height(),
+			};
+		});
 
 		p.__defineSetter__("canvasColor", function(c) {
 			c = objToColor(c);

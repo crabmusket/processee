@@ -37,17 +37,20 @@ window.processee = {
 		layer.everyFrame.push(fn);
 	},
 
-	object: function(obj) {
+	object: function(obj, init) {
 		if(!obj.hasOwnProperty('layer') || typeof obj.layer != 'number') {
 			obj.layer = 1;
 		}
 		var layer = window.processee.getLayer(obj.layer);
 		layer.objects.push(obj);
+		if(init) {
+			obj.__processeeInit = init;
+		}
 	},
 
-	objects: function(objs) {
+	objects: function(objs, init) {
 		for(var i = 0; i < objs.length; i++) {
-			window.processee.object(objs[i]);
+			window.processee.object(objs[i], init);
 		}
 	},
 
@@ -721,6 +724,12 @@ window.processee.create = function() {
 					catch(err) { window.processee.handleRuntimeError(err); }
 				}
 				for(var j = 0; j < layer.objects.length; j++) {
+					if('__processeeInit' in layer.objects[j]) {
+						p.reset();
+						try { layer.objects[j].__processeeInit.call(p, layer.objects[j]); }
+						catch(err) { window.processee.handleRuntimeError(err); }
+						delete layer.objects[j]['__processeeInit'];
+					}
 					if('draw' in layer.objects[j]) {
 						p.reset();
 						try { layer.objects[j].draw.call(p, layer.objects[j]); }

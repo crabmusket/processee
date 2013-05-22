@@ -24,7 +24,7 @@ window.processee = {
 			fn = conf;
 			conf = { layer: undefined };
 		}
-		var layer = window.processee.getLayer(conf.layer || 1);
+		var layer = window.processee.getLayer(firstDefined([conf.layer, 1]));
 		layer.once.push(fn);
 	},
 
@@ -33,7 +33,7 @@ window.processee = {
 			fn = conf;
 			conf = { layer: undefined };
 		}
-		var layer = window.processee.getLayer(conf.layer || 1);
+		var layer = window.processee.getLayer(firstDefined([conf.layer, 1]));
 		layer.everyFrame.push(fn);
 	},
 
@@ -90,7 +90,6 @@ window.processee = {
 			try { eval(js); }
 			catch(err) { window.processee.handleRuntimeError(err); }
 		}
-		window.processee.layers.sort();
 		window.processingInstance = new Processing(
 			$('#processing')[0],
 			window.processee.create());
@@ -286,12 +285,15 @@ window.processee.create = function() {
 			}
 		};
 
-		p.sizeOf = function(file) {
+		p.sizeOf = function(file, cfg) {
 			var img = p.getImage(file);
+			var zoom = 1;
+			if(cfg !== undefined && cfg.zoom !== undefined)
+				zoom = cfg.zoom;
 			if(img !== undefined) {
 				return {
-					width: img.width,
-					height: img.height,
+					width: img.width * zoom,
+					height: img.height * zoom,
 				};
 			} else {
 				p.__imageNotLoaded(file);
@@ -742,13 +744,13 @@ window.processee.create = function() {
 			if(p.webcam) {
 				p.__webcamCapture();
 			}
-			// Call do-once routines and setup objects.
+			// Render objects and layers.
 			for(var l = 0; l < layers.length; l++) {
 				var layer = layers[l];
 				if(!layer) continue;
 				for(var j = 0; j < layer.everyFrame.length; j++) {
 					p.reset();
-					try { layer.everyFrame[j].call(p, layer.objects[j]); }
+					try { layer.everyFrame[j].call(p); }
 					catch(err) { window.processee.handleRuntimeError(err); }
 				}
 				for(var j = 0; j < layer.objects.length; j++) {

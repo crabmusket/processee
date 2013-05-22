@@ -655,7 +655,9 @@ window.processee.create = function() {
 			// Try to get the webcam if we need it, and after that's done load the images.
 			if(p.webcam) {
 				var video = $('#webcam');
-				var error = function() {};
+				var error = function() {
+					p.__loadImages();
+				};
 				var success = function(stream) {
 					if(window.webkitURL) {
 						window.processee.webcamSource = window.webkitURL.createObjectURL(stream);

@@ -250,7 +250,11 @@ window.processee.create = function() {
 
 		p.getImage = function(i) {
 			if(typeof i == "string") {
-				return p.__imageData[i];
+				if(p.__imageData[i]) {
+					return p.__imageData[i];
+				} else {
+					p.__imageNotLoaded(i);
+				}
 			} else {
 				return i;
 			}

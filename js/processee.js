@@ -264,14 +264,23 @@ window.processee.create = function() {
 			throw new Error('Image file "' + file + '" has not been loaded.');
 		};
 
-		p.drawImage = function(file) {
+		p.drawImage = function(file, cfg) {
 			file = p.getImage(file);
+			if(!cfg) cfg = {};
 			if(file !== undefined) {
 				var tempCanvas = $('#processee-internal-canvas')[0];
 				tempCanvas.width = file.width;
 				tempCanvas.height = file.height;
 				tempCanvas.getContext('2d').putImageData(file, 0, 0);
-				$('#processing')[0].getContext('2d').drawImage(tempCanvas, 0, 0);
+				var x, y;
+				if(cfg.center) {
+					x = firstDefined([cfg.x, -file.width/2]);
+					y = firstDefined([cfg.y, -file.height/2]);
+				} else {
+					x = firstDefined([cfg.x, 0]);
+					y = firstDefined([cfg.y, 0]);
+				}
+				$('#processing')[0].getContext('2d').drawImage(tempCanvas, x, y);
 			} else {
 				p.__imageNotLoaded(file);
 			}

@@ -568,8 +568,6 @@ window.processee.create = function() {
 		};
 
 		p.__images = [];
-		p.webcamImageName = "webcam";
-		p.webcam = false;
 		p.__imageData = {};
 
 		p.loadImage = function(file) {
@@ -637,6 +635,50 @@ window.processee.create = function() {
 			return result;
 		};
 
+		p.__webcamImageName = "webcam";
+		p.__defineSetter__("webcamImageName", function(n) {
+			p.__images[n] = p.__images[p.__webcamImageName];
+			p.__webcamImageName = n;
+		});
+		p.__defineGetter__("webcamImageName", function() {
+			return p.__webcamImageName;
+		});
+
+		p.__webcam = false;
+		p.__defineSetter__("webcam", function(w) {
+			if(p.__imageData[p.webcamImageName] == undefined) {
+				p.makeNewImage({
+					name: p.webcamImageName,
+					width: 640,
+					height: 480,
+				});
+			}
+			if(w && !p.__webcam) {
+				var video = $('#webcam');
+				var error = function() {};
+				var success = function(stream) {
+					if(window.webkitURL) {
+						window.processee.webcamSource = window.webkitURL.createObjectURL(stream);
+					} else {
+						window.processee.webcamSource = stream;
+					}
+					video[0].src = window.processee.webcamSource;
+					video[0].autoplay = true;
+					video[0].addEventListener("canplay", function () {});
+				};
+
+				if(!window.processee.webcamSource) {
+					navigator.getUserMedia({
+						video: true,
+					}, success, error);
+				}
+			}
+			p.__webcam = w;
+		});
+		p.__defineGetter__("webcam", function() {
+			return p.__webcam;
+		});
+
 		p.__webcamCapture = function() {
 			$('.webcam').toggle(true);
 			var video = $('#webcam');
@@ -660,36 +702,7 @@ window.processee.create = function() {
 				try { setups[i].call(p); }
 				catch(err) { window.processee.handleRuntimeError(err); }
 			}
-
-			// Try to get the webcam if we need it, and after that's done load the images.
-			if(p.webcam) {
-				var video = $('#webcam');
-				var error = function() {
-					p.__loadImages();
-				};
-				var success = function(stream) {
-					if(window.webkitURL) {
-						window.processee.webcamSource = window.webkitURL.createObjectURL(stream);
-					} else {
-						window.processee.webcamSource = stream;
-					}
-					video[0].src = window.processee.webcamSource;
-					video[0].autoplay = true;
-					video[0].addEventListener("canplay", function () {
-						p.__loadImages();
-					});
-				};
-
-				if(!window.processee.webcamSource) {
-					navigator.getUserMedia({
-						video: true,
-					}, success, error);
-				} else {
-					p.__loadImages();
-				}
-			} else {
-				p.__loadImages(); // Calls __onSetup eventually
-			}
+			p.__loadImages();
 		};
 
 		p.__onSetup = function() {

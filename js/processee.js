@@ -464,7 +464,7 @@ window.processee.create = function() {
 		};
 
 		p.__defineSetter__('fillColor', function(c) {
-			c = objToColor(c ? c : {gray: 255});
+			c = objToColor(c ? c : {alpha: 0});
 			p.__stack[p.__stack.length-1].fill = {red: c.red, green: c.green, blue: c.blue, alpha: c.alpha};
 			p.__stackSet();
 		});
@@ -484,7 +484,7 @@ window.processee.create = function() {
 		});
 
 		p.__defineSetter__('strokeColor', function(c) {
-			c = objToColor(c ? c : {gray: 0});
+			c = objToColor(c ? c : {alpha: 0});
 			p.__stack[p.__stack.length-1].stroke = {red: c.red, green: c.green, blue: c.blue, alpha: c.alpha};
 			p.__stackSet();
 		});

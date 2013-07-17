@@ -37,10 +37,13 @@ $(document).ready(function() {
 		mode: 'processee',
 		theme: 'processee-light',
 		lineNumbers: true,
-		tabMode: 'shift',
 		extraKeys: {
 			'Ctrl-Enter': function() {
 				window.processee.init().run(window.cm.getValue());
+			},
+			'Tab': function() {
+				window.cm.replaceSelection("  ");
+				window.cm.setCursor(window.cm.getCursor());
 			},
 		},
 	});

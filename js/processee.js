@@ -285,12 +285,15 @@ window.processee.create = function() {
 			}
 		};
 
-		p.sizeOf = function(file) {
+		p.sizeOf = function(file, cfg) {
 			var img = p.getImage(file);
+			var zoom = 1;
+			if(cfg !== undefined && cfg.zoom !== undefined)
+				zoom = cfg.zoom;
 			if(img !== undefined) {
 				return {
-					width: img.width,
-					height: img.height,
+					width: img.width * zoom,
+					height: img.height * zoom,
 				};
 			} else {
 				p.__imageNotLoaded(file);

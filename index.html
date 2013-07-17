@@ -479,6 +479,48 @@ muteColors = (img) -> ->
   @setEachPixelOf image: img, to: (p) ->
     red: p.red / 2, green: p.green / 2, blue: p.blue / 2
 </div>
+<div id="ex-uav">
+# UAV Outback challenge image algorithm testing
+# For a language guide, see coffeescript.org
+# For examples, click the 'i' over there -->
+# After making code changes, hit 'Ctrl-Enter' to refresh the output
+
+### Configuration ###
+
+# List of image files, uavX.png
+images = ("uav#{i}.png" for i in [1..3])
+
+# Which image to use right now
+image = images[1]
+
+# Scale factor so we can view the result nicely
+zoom = 0.5
+
+### Setup ###
+
+processee.setup ->
+  # Fetch the desired image from the server
+  @loadImage image
+
+### Main routine ###
+
+processee.once ->
+  # Scale the canvas to the image size, accounting for the zoom factor
+  @canvasSize = @sizeOf image, zoom: zoom
+  # And now set the zoom factor
+  @zoom = zoom
+  # First draw the base image
+  @drawImage image
+  # Do other stuff!
+  @fillColor = off
+  @strokeColor = green: 255
+  # Found you...
+  @drawRect
+    x: 750
+    y: 680
+    width: 100
+    height: 100
+</div>
 		</div>
 	</div>
 	<div class="about">

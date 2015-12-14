@@ -15,7 +15,7 @@ Processee aims to fix, or at least alleviate, some of the major ones:
    Processee lets you draw in blocks with their own state that does not 'leak' out.
    This means you can stop pushing and popping matrices, and enables painless _recomposition_.
    
- * **Optimised for writing, not reading** - functions with several unnamed arguments makes Processing difficult to learn without constantly checking function references.
+ * **Optimised for writing, not reading** - functions with multiple unnamed arguments make Processing difficult to learn without constantly checking function references.
    Processee functions take configuration objects with named parameters for clarity.
    
  * **Unnatural naming convention** where verbs like `fill` perform no visible actions, but nouns like `rect` do.
